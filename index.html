@@ -23,127 +23,297 @@ box-sizing:border-box;
 font-family:'Playfair Display',serif;
 }
 
+
 body{
+
 min-height:100vh;
+
 display:flex;
+
 justify-content:center;
+
 align-items:center;
+
 padding:20px;
-background:linear-gradient(120deg,#0f172a,#1e293b,#0f172a);
+
+background:#f5f7fb;
+
 }
 
+
+
 .card{
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(25px);
-border-radius:28px;
-padding:45px;
+
+background:#ffffff;
+
+border-radius:22px;
+
+padding:45px 55px;
+
 width:450px;
+
 max-width:100%;
+
 text-align:center;
-border:1px solid rgba(255,255,255,.15);
-box-shadow:0 10px 40px rgba(0,0,0,.5);
+
+box-shadow:
+0 15px 45px rgba(0,0,0,.12);
+
+border:none;
+
 }
+
 
 
 h2{
+
 font-size:40px;
-color:#f5f5f7;
+
+color:#333;
+
+margin-bottom:8px;
+
 }
+
 
 
 .subtitle{
+
 font-size:14px;
-color:rgba(255,255,255,.6);
-margin-bottom:20px;
+
+color:#999;
+
+margin-bottom:25px;
+
 }
+
+
+
 
 
 .main-option{
-padding:15px;
-margin:12px 0;
-border-radius:14px;
-background:rgba(255,255,255,.12);
-color:white;
+
+padding:16px;
+
+margin:14px 0;
+
+border-radius:18px;
+
+background:#f2f5fb;
+
+color:#555;
+
 cursor:pointer;
+
 transition:.3s;
+
+border:1px solid #e8edf5;
+
 }
+
 
 
 .main-option:hover{
-background:linear-gradient(135deg,#ffe600,#ffd000);
-color:#111;
+
+background:
+linear-gradient(135deg,#25c8e8,#249cf5);
+
+color:white;
+
+transform:translateY(-2px);
+
 }
+
+
+
 
 
 .hidden{
+
 display:none;
+
 }
+
 
 
 .desc{
+
 margin:20px 0;
-color:white;
+
+color:#777;
+
+font-size:14px;
+
 }
+
+
+
 
 
 .options{
+
 display:flex;
+
 gap:10px;
+
 flex-wrap:wrap;
+
 justify-content:center;
+
 }
+
+
+
 
 
 .opt-btn{
-padding:10px;
-border-radius:10px;
-background:rgba(255,255,255,.1);
-border:1px solid rgba(255,255,255,.2);
-color:white;
+
+padding:10px 12px;
+
+border-radius:12px;
+
+background:#f3f5fa;
+
+border:1px solid #e5e8ef;
+
+color:#555;
+
 cursor:pointer;
+
 font-size:13px;
+
+transition:.2s;
+
 }
+
 
 
 .opt-btn.active{
-background:#ffe600;
-color:#111;
+
+background:
+linear-gradient(135deg,#25c8e8,#249cf5);
+
+color:white;
+
+border:none;
+
 }
+
+
+
 
 
 input{
+
 width:100%;
-padding:15px;
-margin:15px 0;
-border-radius:14px;
+
+padding:15px 5px;
+
+margin:18px 0;
+
 border:none;
-background:rgba(255,255,255,.12);
-color:white;
+
+border-bottom:
+
+2px solid #b65cff;
+
+background:transparent;
+
+color:#333;
+
+font-size:15px;
+
+outline:none;
+
 }
+
+
+
+
+
+input[type="file"]{
+
+border:1px solid #ddd;
+
+border-radius:12px;
+
+padding:12px;
+
+background:#fafafa;
+
+}
+
+
+
 
 
 button{
+
 width:100%;
+
 padding:15px;
+
 border:none;
-border-radius:14px;
+
+border-radius:25px;
+
 cursor:pointer;
-background:linear-gradient(135deg,#ffe600,#ffd000);
+
+background:
+
+linear-gradient(135deg,#27d3e9,#2498f5);
+
+color:white;
+
 font-weight:600;
+
+font-size:15px;
+
+box-shadow:
+
+0 8px 20px rgba(36,156,245,.25);
+
+transition:.3s;
+
 }
+
+
+
+
+button:hover{
+
+transform:translateY(-2px);
+
+box-shadow:
+
+0 12px 25px rgba(36,156,245,.35);
+
+}
+
+
 
 
 #result,
 #sklResult,
 #jpgPdfResult,
 #pdfJpgResult{
+
 margin-top:15px;
-color:white;
+
+color:#555;
+
 }
 
 
+
+
+
 .highlight{
-color:#ff453a;
+
+color:#ff4d4d;
+
+font-weight:600;
+
 }
 
 </style>
@@ -163,6 +333,7 @@ color:#ff453a;
 <div class="subtitle" id="subtitle">
 Automatic BPJS Date Calculator
 </div>
+
 
 
 
@@ -248,6 +419,8 @@ Back
 
 
 
+
+
 <div id="converter" class="hidden">
 
 
@@ -265,6 +438,7 @@ Converter JPG to PDF
 <div class="main-option" onclick="openPDFJPG()">
 Converter PDF to JPG
 </div>
+
 
 
 
@@ -362,7 +536,6 @@ Back
 
 
 
-
 <script>
 
 
@@ -424,9 +597,7 @@ subtitle.innerText=
 
 
 
-
 function setMode(v,t,e,i){
-
 
 modeValue=v;
 
@@ -457,8 +628,8 @@ desc.innerText="Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 
 
 
-function calculateDate(){
 
+function calculateDate(){
 
 let input =
 document.getElementById("startDate").value;
@@ -515,7 +686,9 @@ ${d.toLocaleDateString('en-GB')}
 function hideBoxes(){
 
 sklBox.classList.add("hidden");
+
 jpgpdfBox.classList.add("hidden");
+
 pdfjpgBox.classList.add("hidden");
 
 }
@@ -531,6 +704,7 @@ sklBox.classList.remove("hidden");
 }
 
 
+
 function openJPGPDF(){
 
 hideBoxes();
@@ -538,6 +712,7 @@ hideBoxes();
 jpgpdfBox.classList.remove("hidden");
 
 }
+
 
 
 function openPDFJPG(){
@@ -570,10 +745,10 @@ reader.onload=e=>img.src=e.target.result;
 
 img.onload=function(){
 
-
 let canvas=document.createElement("canvas");
 
 canvas.width=img.width;
+
 canvas.height=img.height;
 
 
@@ -586,7 +761,6 @@ let quality=.9;
 
 
 function compress(){
-
 
 canvas.toBlob(blob=>{
 
@@ -604,8 +778,7 @@ else{
 
 let a=document.createElement("a");
 
-a.href=
-URL.createObjectURL(blob);
+a.href=URL.createObjectURL(blob);
 
 a.download="SKL_BBL.jpg";
 
@@ -615,9 +788,7 @@ a.click();
 sklResult.innerText=
 "Done ✔ JPG under 900KB";
 
-
 }
-
 
 },"image/jpeg",quality);
 
@@ -626,7 +797,6 @@ sklResult.innerText=
 
 
 compress();
-
 
 }
 
@@ -671,15 +841,12 @@ pdf.save("converted.pdf");
 jpgPdfResult.innerText=
 "Done ✔ PDF created";
 
-
 }
 
 
 reader.readAsDataURL(file);
 
-
 }
-
 
 
 
