@@ -1,540 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>PIPP-Calc</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Playfair Display',serif;
-}
-
-
-body{
-
-min-height:100vh;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-padding:20px;
-
-background:#f5f7fb;
-
-}
-
-
-
-.card{
-
-background:#ffffff;
-
-border-radius:22px;
-
-padding:45px 55px;
-
-width:450px;
-
-max-width:100%;
-
-text-align:center;
-
-box-shadow:
-0 15px 45px rgba(0,0,0,.12);
-
-border:none;
-
-}
-
-
-
-h2{
-
-font-size:40px;
-
-color:#333;
-
-margin-bottom:8px;
-
-}
-
-
-
-.subtitle{
-
-font-size:14px;
-
-color:#999;
-
-margin-bottom:25px;
-
-}
-
-
-
-
-
-.main-option{
-
-padding:16px;
-
-margin:14px 0;
-
-border-radius:18px;
-
-background:#f2f5fb;
-
-color:#555;
-
-cursor:pointer;
-
-transition:.3s;
-
-border:1px solid #e8edf5;
-
-}
-
-
-
-.main-option:hover{
-
-background:
-linear-gradient(135deg,#25c8e8,#249cf5);
-
-color:white;
-
-transform:translateY(-2px);
-
-}
-
-
-
-
-
-.hidden{
-
-display:none;
-
-}
-
-
-
-.desc{
-
-margin:20px 0;
-
-color:#777;
-
-font-size:14px;
-
-}
-
-
-
-
-
-.options{
-
-display:flex;
-
-gap:10px;
-
-flex-wrap:wrap;
-
-justify-content:center;
-
-}
-
-
-
-
-
-.opt-btn{
-
-padding:10px 12px;
-
-border-radius:12px;
-
-background:#f3f5fa;
-
-border:1px solid #e5e8ef;
-
-color:#555;
-
-cursor:pointer;
-
-font-size:13px;
-
-transition:.2s;
-
-}
-
-
-
-.opt-btn.active{
-
-background:
-linear-gradient(135deg,#25c8e8,#249cf5);
-
-color:white;
-
-border:none;
-
-}
-
-
-
-
-
-input{
-
-width:100%;
-
-padding:15px 5px;
-
-margin:18px 0;
-
-border:none;
-
-border-bottom:
-
-2px solid #b65cff;
-
-background:transparent;
-
-color:#333;
-
-font-size:15px;
-
-outline:none;
-
-}
-
-
-
-
-
-input[type="file"]{
-
-border:1px solid #ddd;
-
-border-radius:12px;
-
-padding:12px;
-
-background:#fafafa;
-
-}
-
-
-
-
-
-button{
-
-width:100%;
-
-padding:15px;
-
-border:none;
-
-border-radius:25px;
-
-cursor:pointer;
-
-background:
-
-linear-gradient(135deg,#27d3e9,#2498f5);
-
-color:white;
-
-font-weight:600;
-
-font-size:15px;
-
-box-shadow:
-
-0 8px 20px rgba(36,156,245,.25);
-
-transition:.3s;
-
-}
-
-
-
-
-button:hover{
-
-transform:translateY(-2px);
-
-box-shadow:
-
-0 12px 25px rgba(36,156,245,.35);
-
-}
-
-
-
-
-#result,
-#sklResult,
-#jpgPdfResult,
-#pdfJpgResult{
-
-margin-top:15px;
-
-color:#555;
-
-}
-
-
-
-
-
-.highlight{
-
-color:#ff4d4d;
-
-font-weight:600;
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<div class="card">
-
-
-<h2 id="title">PIPP-Calc</h2>
-
-
-<div class="subtitle" id="subtitle">
-Automatic BPJS Date Calculator
-</div>
-
-
-
-
-
-<div id="menu">
-
-
-<div class="main-option" onclick="openAdmin()">
-PIPP Administration
-</div>
-
-
-<div class="main-option" onclick="openConverter()">
-Converter
-</div>
-
-
-</div>
-
-
-
-
-
-<div id="admin" class="hidden">
-
-
-<p class="desc" id="desc">
-Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
-</p>
-
-
-
-<div class="options">
-
-
-<div class="opt-btn active"
-onclick="setMode(90,'days',this,1)">
-Masa Aktif Surat Rujukan
-</div>
-
-
-<div class="opt-btn"
-onclick="setMode(23,'days',this,2)">
-Batas Klaim Kacamata ke Optik
-</div>
-
-
-<div class="opt-btn"
-onclick="setMode(2,'years',this,3)">
-Klaim 1x 2 Th
-</div>
-
-
-</div>
-
-
-
-<input type="date" id="startDate">
-
-
-
-<button onclick="calculateDate()">
-Calculate Date
-</button>
-
-
-
-<div id="result"></div>
-
-
-
-<br>
-
-<button onclick="backMenu()">
-Back
-</button>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div id="converter" class="hidden">
-
-
-
-<div class="main-option" onclick="openSKL()">
-Converter SKL BBL
-</div>
-
-
-<div class="main-option" onclick="openJPGPDF()">
-Converter JPG to PDF
-</div>
-
-
-<div class="main-option" onclick="openPDFJPG()">
-Converter PDF to JPG
-</div>
-
-
-
-
-
-<div id="sklBox" class="hidden">
-
-
-<p class="desc">
-Convert image → JPG under 900 KB
-</p>
-
-
-<input type="file" id="sklInput" accept="image/*">
-
-
-<button onclick="convertSKL()">
-Convert JPG
-</button>
-
-
-<div id="sklResult"></div>
-
-
-</div>
-
-
-
-
-
-
-<div id="jpgpdfBox" class="hidden">
-
-
-<p class="desc">
-Convert image into PDF
-</p>
-
-
-<input type="file" id="jpgPdfInput" accept="image/*">
-
-
-<button onclick="convertJPGPDF()">
-Convert PDF
-</button>
-
-
-<div id="jpgPdfResult"></div>
-
-
-</div>
-
-
-
-
-
-
-
-<div id="pdfjpgBox" class="hidden">
-
-
-<p class="desc">
-Convert PDF into JPG
-</p>
-
-
-<input type="file" id="pdfInput" accept="application/pdf">
-
-
-<button onclick="convertPDFJPG()">
-Convert JPG
-</button>
-
-
-<div id="pdfJpgResult"></div>
-
-
-</div>
-
-
-
-<br>
-
-
-<button onclick="backMenu()">
-Back
-</button>
-
-
-</div>
-
-
-</div>
-
-
-
-
+<!-- your entire HTML stays exactly the same -->
 
 <script>
 
@@ -629,6 +93,8 @@ desc.innerText="Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 
 
 
+// UPDATED DATE CALCULATOR
+
 function calculateDate(){
 
 let input =
@@ -669,11 +135,37 @@ d.getFullYear()+modeValue
 
 
 
+let months=[
+"Januari",
+"Februari",
+"Maret",
+"April",
+"Mei",
+"Juni",
+"Juli",
+"Agustus",
+"September",
+"Oktober",
+"November",
+"Desember"
+];
+
+
+
+let formattedDate =
+d.getDate()
++" "
++months[d.getMonth()]
++" "
++d.getFullYear();
+
+
+
 
 document.getElementById("result").innerHTML =
 
 `Result: <span class="highlight">
-${d.toLocaleDateString('en-GB')}
+${formattedDate}
 </span>`;
 
 }
@@ -809,7 +301,6 @@ reader.readAsDataURL(file);
 
 
 
-
 function convertJPGPDF(){
 
 
@@ -932,6 +423,3 @@ reader.readAsArrayBuffer(file);
 
 
 </script>
-
-</body>
-</html>
