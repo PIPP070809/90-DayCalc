@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>PIPP-Calc</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
 
 <style>
 
@@ -16,6 +22,7 @@ padding:0;
 box-sizing:border-box;
 font-family:'Playfair Display',serif;
 }
+
 
 body{
 min-height:100vh;
@@ -27,7 +34,9 @@ background:linear-gradient(120deg,#0f172a,#1e293b,#0f172a);
 }
 
 
+
 .card{
+
 background:rgba(255,255,255,.08);
 backdrop-filter:blur(25px);
 border-radius:28px;
@@ -37,20 +46,27 @@ max-width:100%;
 text-align:center;
 border:1px solid rgba(255,255,255,.15);
 box-shadow:0 10px 40px rgba(0,0,0,.5);
+
 }
 
 
+
 h2{
+
 font-size:40px;
 color:#f5f5f7;
+
 }
 
 
 .subtitle{
+
 font-size:14px;
 color:rgba(255,255,255,.6);
 margin-bottom:20px;
+
 }
+
 
 
 .main-option{
@@ -58,12 +74,16 @@ margin-bottom:20px;
 padding:15px;
 margin:12px 0;
 border-radius:14px;
+
 background:rgba(255,255,255,.12);
+
 color:white;
 cursor:pointer;
+
 transition:.3s;
 
 }
+
 
 
 .main-option:hover{
@@ -74,39 +94,49 @@ color:#111;
 }
 
 
+
 .hidden{
 display:none;
 }
+
 
 
 .desc{
 
 margin:20px 0;
 color:white;
+
 }
+
 
 
 .options{
 
 display:flex;
-flex-wrap:wrap;
 gap:10px;
+flex-wrap:wrap;
 justify-content:center;
 
 }
+
 
 
 .opt-btn{
 
 padding:10px;
 border-radius:10px;
+
 background:rgba(255,255,255,.1);
+
 border:1px solid rgba(255,255,255,.2);
+
 color:white;
 cursor:pointer;
+
 font-size:13px;
 
 }
+
 
 
 .opt-btn.active{
@@ -117,11 +147,14 @@ color:#111;
 }
 
 
+
+
 input{
 
 width:100%;
 padding:15px;
 margin:15px 0;
+
 border-radius:14px;
 border:none;
 
@@ -131,26 +164,36 @@ color:white;
 }
 
 
+
 button{
 
 width:100%;
 padding:15px;
+
 border:none;
 border-radius:14px;
+
 cursor:pointer;
 
 background:linear-gradient(135deg,#ffe600,#ffd000);
+
 font-weight:600;
 
 }
 
 
-#result{
 
-margin-top:20px;
+#result,
+#convertResult,
+#sklResult,
+#jpgPdfResult,
+#pdfJpgResult{
+
+margin-top:15px;
 color:white;
 
 }
+
 
 
 .highlight{
@@ -161,6 +204,7 @@ color:#ff453a;
 
 </style>
 
+
 </head>
 
 
@@ -170,30 +214,44 @@ color:#ff453a;
 <div class="card">
 
 
-<h2 id="title">PIPP-Calc</h2>
+<h2 id="title">
+PIPP-Calc
+</h2>
+
 
 <div class="subtitle" id="subtitle">
+
 Automatic BPJS Date Calculator
+
 </div>
 
 
 
-<!-- MAIN MENU -->
+
+<!-- MENU -->
+
 
 <div id="menu">
 
 
 <div class="main-option" onclick="openAdmin()">
+
 PIPP Administration
+
 </div>
+
 
 
 <div class="main-option" onclick="openConverter()">
+
 Converter
+
 </div>
 
 
 </div>
+
+
 
 
 
@@ -201,11 +259,14 @@ Converter
 
 <!-- ADMIN -->
 
+
 <div id="admin" class="hidden">
 
 
 <p class="desc" id="desc">
+
 Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
+
 </p>
 
 
@@ -214,19 +275,26 @@ Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
 
 <div class="opt-btn active"
 onclick="setMode(90,'days',this,1)">
+
 Masa Aktif Surat Rujukan
+
 </div>
 
 
 <div class="opt-btn"
 onclick="setMode(23,'days',this,2)">
+
 Batas Klaim Kacamata ke Optik
+
 </div>
+
 
 
 <div class="opt-btn"
 onclick="setMode(2,'years',this,3)">
+
 Klaim 1x 2 Th
+
 </div>
 
 
@@ -237,8 +305,10 @@ Klaim 1x 2 Th
 <input type="date" id="startDate">
 
 
-<button onclick="calculateDate()">
+<button onclick="calculateDate">
+
 Calculate Date
+
 </button>
 
 
@@ -247,12 +317,19 @@ Calculate Date
 
 <br>
 
+
 <button onclick="backMenu()">
+
 Back
+
 </button>
 
 
 </div>
+
+
+
+
 
 
 
@@ -265,40 +342,161 @@ Back
 <div id="converter" class="hidden">
 
 
-<p class="desc" id="converterDesc">
-Silahkan masukkan gambar yang ingin anda ubah menjadi JPG &lt; 1 Mb
+<div id="converterMenu">
+
+
+<div class="main-option" onclick="openSKL()">
+
+Converter SKL BBL
+
+</div>
+
+
+
+<div class="main-option" onclick="openJPGPDF()">
+
+Converter JPG to PDF
+
+</div>
+
+
+
+<div class="main-option" onclick="openPDFJPG()">
+
+Converter PDF to JPG
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- SKL -->
+
+
+<div id="sklBox" class="hidden">
+
+
+<p class="desc">
+
+Convert image → JPG under 900 KB
+
 </p>
 
 
-
-<input 
-type="file"
-id="imageInput"
-accept="image/*">
+<input type="file" id="sklInput" accept="image/*">
 
 
+<button onclick="convertSKL()">
 
-<button onclick="convertImage()">
 Convert JPG
+
 </button>
 
 
-<div id="convertResult"></div>
+<div id="sklResult"></div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- JPG PDF -->
+
+
+<div id="jpgpdfBox" class="hidden">
+
+
+<p class="desc">
+
+Convert image into PDF
+
+</p>
+
+
+<input type="file" id="jpgPdfInput" accept="image/*">
+
+
+<button onclick="convertJPGPDF()">
+
+Convert PDF
+
+</button>
+
+
+<div id="jpgPdfResult"></div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- PDF JPG -->
+
+
+<div id="pdfjpgBox" class="hidden">
+
+
+<p class="desc">
+
+Convert PDF into JPG
+
+</p>
+
+
+<input type="file" id="pdfInput" accept="application/pdf">
+
+
+<button onclick="convertPDFJPG()">
+
+Convert JPG
+
+</button>
+
+
+<div id="pdfJpgResult"></div>
+
+
+</div>
+
+
+
 
 
 <br>
 
 
 <button onclick="backMenu()">
+
 Back
+
 </button>
 
 
-</div>
-
-
 
 </div>
+
+
+
+
+
+
+
+</div>
+
 
 
 
@@ -314,61 +512,61 @@ let modeType="days";
 
 function openAdmin(){
 
+
 menu.classList.add("hidden");
 
 admin.classList.remove("hidden");
 
 
-document.getElementById("title").innerText =
-"PIPP-Calc";
+title.innerText="PIPP-Calc";
 
-
-document.getElementById("subtitle").innerText =
+subtitle.innerText=
 "Automatic BPJS Date Calculator";
 
 
 }
+
 
 
 
 
 function openConverter(){
 
+
 menu.classList.add("hidden");
 
 converter.classList.remove("hidden");
 
 
-document.getElementById("title").innerText =
-"PIPP-Converter";
+title.innerText="PIPP-Converter";
 
-
-document.getElementById("subtitle").innerText =
+subtitle.innerText=
 "Image Format Converter";
 
+
 }
+
+
 
 
 
 
 function backMenu(){
 
+
 menu.classList.remove("hidden");
 
 
 admin.classList.add("hidden");
 
-
 converter.classList.add("hidden");
 
 
+title.innerText="PIPP-Calc";
 
-document.getElementById("title").innerText =
-"PIPP-Calc";
-
-
-document.getElementById("subtitle").innerText =
+subtitle.innerText=
 "Automatic BPJS Date Calculator";
+
 
 }
 
@@ -377,40 +575,36 @@ document.getElementById("subtitle").innerText =
 
 
 
-function setMode(value,type,el,index){
 
-modeValue=value;
-
-modeType=type;
+function setMode(v,t,e,i){
 
 
+modeValue=v;
 
-document.querySelectorAll('.opt-btn')
-.forEach(btn=>btn.classList.remove('active'));
+modeType=t;
 
 
 
-el.classList.add('active');
+document.querySelectorAll(".opt-btn")
+.forEach(x=>x.classList.remove("active"));
+
+
+e.classList.add("active");
 
 
 
-if(index==1)
-
-desc.innerText =
+if(i==1)
+desc.innerText=
 "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
 
 
-
-if(index==2)
-
-desc.innerText =
+if(i==2)
+desc.innerText=
 "Silahkan masukkan tanggal Klaim Kacamata terakhir:";
 
 
-
-if(index==3)
-
-desc.innerText =
+if(i==3)
+desc.innerText=
 "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 
 
@@ -421,38 +615,27 @@ desc.innerText =
 
 
 
+
 function calculateDate(){
 
 
-let input=startDate.value;
+let d=new Date(startDate.value);
 
 
+if(!startDate.value){
 
-if(!input){
-
-result.innerText="Please select a date";
+result.innerText="Choose date";
 
 return;
 
 }
 
 
-
-let date=new Date(input);
-
-
-
-
 if(modeType=="days")
-
-date.setDate(date.getDate()+modeValue);
-
-
+d.setDate(d.getDate()+modeValue);
 
 else
-
-date.setFullYear(date.getFullYear()+modeValue);
-
+d.setFullYear(d.getFullYear()+modeValue);
 
 
 
@@ -460,10 +643,58 @@ result.innerHTML=
 
 `Result: <span class="highlight">
 
-${date.toLocaleDateString()}
+${d.toLocaleDateString()}
 
 </span>`;
 
+
+}
+
+
+
+
+
+
+
+function hideBoxes(){
+
+sklBox.classList.add("hidden");
+
+jpgpdfBox.classList.add("hidden");
+
+pdfjpgBox.classList.add("hidden");
+
+
+}
+
+
+
+function openSKL(){
+
+hideBoxes();
+
+sklBox.classList.remove("hidden");
+
+}
+
+
+
+function openJPGPDF(){
+
+hideBoxes();
+
+jpgpdfBox.classList.remove("hidden");
+
+}
+
+
+
+function openPDFJPG(){
+
+hideBoxes();
+
+pdfjpgBox.classList.remove("hidden");
+
 }
 
 
@@ -473,26 +704,14 @@ ${date.toLocaleDateString()}
 
 
 
-// IMAGE CONVERTER
+
+function convertSKL(){
 
 
-function convertImage(){
+let file=sklInput.files[0];
 
 
-let file =
-document.getElementById("imageInput").files[0];
-
-
-
-if(!file){
-
-convertResult.innerText =
-"Choose image first";
-
-return;
-
-}
-
+if(!file)return;
 
 
 
@@ -501,14 +720,7 @@ let img=new Image();
 let reader=new FileReader();
 
 
-
-reader.onload=function(e){
-
-img.src=e.target.result;
-
-}
-
-
+reader.onload=e=>img.src=e.target.result;
 
 
 img.onload=function(){
@@ -516,18 +728,12 @@ img.onload=function(){
 
 let canvas=document.createElement("canvas");
 
-
-let ctx=canvas.getContext("2d");
-
-
-
 canvas.width=img.width;
-
 canvas.height=img.height;
 
 
-
-ctx.drawImage(img,0,0);
+canvas.getContext("2d")
+.drawImage(img,0,0);
 
 
 
@@ -538,14 +744,41 @@ let quality=.9;
 function compress(){
 
 
-canvas.toBlob(function(blob){
+canvas.toBlob(blob=>{
 
 
+if(blob.size>900000 && quality>.1){
 
-if(blob.size>1024*1024 && quality>.1){
+quality-=.05;
+
+compress();
+
+}
+
+else{
 
 
-quality-=.1;
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="SKL_BBL.jpg";
+
+a.click();
+
+
+sklResult.innerText=
+"Done ✔ JPG under 900KB";
+
+}
+
+
+},"image/jpeg",quality);
+
+
+}
+
+
 
 compress();
 
@@ -553,15 +786,117 @@ compress();
 }
 
 
-else{
+reader.readAsDataURL(file);
+
+
+}
+
+
+
+
+
+
+
+
+
+function convertJPGPDF(){
+
+
+let file=jpgPdfInput.files[0];
+
+
+let reader=new FileReader();
+
+
+reader.onload=function(e){
+
+
+let pdf=
+new jspdf.jsPDF();
+
+
+pdf.addImage(
+e.target.result,
+"JPEG",
+10,
+10,
+190,
+140
+);
+
+
+pdf.save("converted.pdf");
+
+
+jpgPdfResult.innerText=
+"Done ✔ PDF created";
+
+
+}
+
+
+reader.readAsDataURL(file);
+
+
+}
+
+
+
+
+
+
+
+
+
+function convertPDFJPG(){
+
+
+let file=pdfInput.files[0];
+
+
+let reader=new FileReader();
+
+
+
+reader.onload=function(){
+
+
+pdfjsLib.getDocument(reader.result)
+.promise.then(pdf=>{
+
+
+pdf.getPage(1)
+.then(page=>{
+
+
+let viewport=
+page.getViewport({scale:2});
+
+
+let canvas=
+document.createElement("canvas");
+
+
+canvas.width=viewport.width;
+
+canvas.height=viewport.height;
+
+
+page.render({
+
+canvasContext:
+canvas.getContext("2d"),
+
+viewport:viewport
+
+})
+.promise.then(()=>{
 
 
 let a=document.createElement("a");
 
 
-a.href=
-URL.createObjectURL(blob);
-
+a.href=canvas.toDataURL("image/jpeg");
 
 
 a.download="converted.jpg";
@@ -570,32 +905,28 @@ a.download="converted.jpg";
 a.click();
 
 
-
-convertResult.innerHTML =
-"Done ✔ JPG under 1MB";
-
-}
+pdfJpgResult.innerText=
+"Done ✔ JPG created";
 
 
-},"image/jpeg",quality);
+});
 
 
-
-}
-
+});
 
 
-compress();
+});
 
 
 }
 
 
 
-reader.readAsDataURL(file);
+reader.readAsArrayBuffer(file);
 
 
 }
+
 
 
 </script>
