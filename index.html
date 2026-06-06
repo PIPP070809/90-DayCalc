@@ -1,221 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PIPP-Calc</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>PIPP-Calc</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Playfair Display', serif;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      background: linear-gradient(120deg, #0f172a, #1e293b, #0f172a);
-    }
+<style>
 
-    .card {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(25px);
-      border-radius: 28px;
-      padding: 50px;
-      width: 420px;
-      max-width: 100%;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Playfair Display',serif;
+}
 
-    /* 🔥 TITLE */
-    h2 {
-      font-size: 40px;
-      font-weight: 700;
-      color: #f5f5f7;
-      letter-spacing: 1px;
-    }
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background:linear-gradient(120deg,#0f172a,#1e293b,#0f172a);
+}
 
-    /* ✨ SUBTITLE */
-    .subtitle {
-      font-size: 14px;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 18px;
-      letter-spacing: 0.5px;
-    }
 
-    .desc {
-      margin-bottom: 20px;
-      font-size: 15px;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.6;
-      min-height: 48px;
-    }
+.card{
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(25px);
+border-radius:28px;
+padding:45px;
+width:450px;
+max-width:100%;
+text-align:center;
+border:1px solid rgba(255,255,255,.15);
+box-shadow:0 10px 40px rgba(0,0,0,.5);
+}
 
-    .options {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
 
-    .opt-btn {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      cursor: pointer;
-      font-size: 13px;
-      transition: 0.3s;
-    }
+h2{
+font-size:40px;
+color:#f5f5f7;
+}
 
-    .opt-btn.active {
-      background: linear-gradient(135deg, #ffe600, #ffd000);
-      color: #1a1a1a;
-      font-weight: 600;
-      box-shadow: 0 3px 12px rgba(255,220,0,0.3);
-    }
 
-    input {
-      width: 100%;
-      padding: 16px;
-      margin: 16px 0;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      font-size: 16px;
-    }
+.subtitle{
+font-size:14px;
+color:rgba(255,255,255,.6);
+margin-bottom:20px;
+}
 
-    button {
-      width: 100%;
-      padding: 15px;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(135deg, #ffe600, #ffd000);
-      color: #1a1a1a;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 3px 15px rgba(255,220,0,0.35);
-    }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 25px rgba(255,230,0,0.5);
-    }
+.main-option{
 
-    #result {
-      margin-top: 20px;
-      font-size: 17px;
-      color: #f5f5f7;
-    }
+padding:15px;
+margin:12px 0;
+border-radius:14px;
+background:rgba(255,255,255,.12);
+color:white;
+cursor:pointer;
+transition:.3s;
 
-    .highlight {
-      color: #ff453a;
-      font-weight: 600;
-    }
+}
 
-    @media (max-width: 480px) {
-      .card {
-        padding: 30px 20px;
-      }
 
-      h2 {
-        font-size: 32px;
-      }
-    }
+.main-option:hover{
 
-  </style>
+background:linear-gradient(135deg,#ffe600,#ffd000);
+color:#111;
+
+}
+
+
+.hidden{
+display:none;
+}
+
+
+.desc{
+
+margin:20px 0;
+color:white;
+}
+
+
+.options{
+
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
+
+}
+
+
+.opt-btn{
+
+padding:10px;
+border-radius:10px;
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.2);
+color:white;
+cursor:pointer;
+font-size:13px;
+
+}
+
+
+.opt-btn.active{
+
+background:#ffe600;
+color:#111;
+
+}
+
+
+input{
+
+width:100%;
+padding:15px;
+margin:15px 0;
+border-radius:14px;
+border:none;
+
+background:rgba(255,255,255,.12);
+color:white;
+
+}
+
+
+button{
+
+width:100%;
+padding:15px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+
+background:linear-gradient(135deg,#ffe600,#ffd000);
+font-weight:600;
+
+}
+
+
+#result{
+
+margin-top:20px;
+color:white;
+
+}
+
+
+.highlight{
+
+color:#ff453a;
+
+}
+
+
+</style>
+
 </head>
+
+
 <body>
 
-  <div class="card">
-    <h2>PIPP-Calc</h2>
-    <div class="subtitle">Automatic BPJS Date Calculator</div>
 
-    <p class="desc" id="desc">
-      Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
-    </p>
+<div class="card">
 
-    <div class="options">
-      <div class="opt-btn active" onclick="setMode(90, 'days', this, 1)">
-        Masa Aktif Surat Rujukan
-      </div>
-      <div class="opt-btn" onclick="setMode(23, 'days', this, 2)">
-        Batas klaim kacamata ke Optik
-      </div>
-      <div class="opt-btn" onclick="setMode(2, 'years', this, 3)">
-        Klaim 1x 2 Thn
-      </div>
-    </div>
 
-    <input type="date" id="startDate">
+<h2>PIPP-Calc</h2>
 
-    <button onclick="calculateDate()">Calculate Date</button>
+<div class="subtitle">
+Automatic BPJS Date Calculator
+</div>
 
-    <div id="result"></div>
-  </div>
 
-  <script>
-    let modeValue = 90;
-    let modeType = "days";
 
-    function setMode(value, type, el, modeIndex) {
-      modeValue = value;
-      modeType = type;
+<!-- MAIN MENU -->
 
-      document.querySelectorAll('.opt-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
+<div id="menu">
 
-      el.classList.add('active');
 
-      const desc = document.getElementById("desc");
+<div class="main-option" onclick="openAdmin()">
+PIPP Administration
+</div>
 
-      if (modeIndex === 1) {
-        desc.innerText = "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
-      } else if (modeIndex === 2) {
-        desc.innerText = "Silahkan masukkan tanggal Klaim Kacamata Bantuan BPJS terakhir:";
-      } else if (modeIndex === 3) {
-        desc.innerText = "Silahkan masukkan tanggal Klaim Kacamata Bantuan 1x 2 Tahun terakhir:";
-      }
-    }
 
-    function calculateDate() {
-      const input = document.getElementById("startDate").value;
-      const resultBox = document.getElementById("result");
+<div class="main-option" onclick="openConverter()">
+Converter
+</div>
 
-      if (!input) {
-        resultBox.innerText = "Please select a date";
-        return;
-      }
 
-      let startDate = new Date(input);
+</div>
 
-      if (modeType === "days") {
-        startDate.setDate(startDate.getDate() + modeValue);
-      } else {
-        startDate.setFullYear(startDate.getFullYear() + modeValue);
-      }
 
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const resultDate = startDate.toLocaleDateString(undefined, options);
 
-      resultBox.innerHTML = `Result: <span class="highlight">${resultDate}</span>`;
-    }
-  </script>
+
+<!-- ADMIN -->
+
+<div id="admin" class="hidden">
+
+
+<p class="desc" id="desc">
+Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
+</p>
+
+
+<div class="options">
+
+
+<div class="opt-btn active"
+onclick="setMode(90,'days',this,1)">
+Masa Aktif Surat Rujukan
+</div>
+
+
+<div class="opt-btn"
+onclick="setMode(23,'days',this,2)">
+Batas Klaim Kacamata ke Optik
+</div>
+
+
+<div class="opt-btn"
+onclick="setMode(2,'years',this,3)">
+Klaim 1x 2 Th
+</div>
+
+
+</div>
+
+
+
+<input type="date" id="startDate">
+
+
+<button onclick="calculateDate()">
+Calculate Date
+</button>
+
+
+<div id="result"></div>
+
+
+<br>
+
+<button onclick="backMenu()">
+Back
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- CONVERTER -->
+
+
+<div id="converter" class="hidden">
+
+
+<p class="desc">
+Convert Image to JPG (&lt;1MB)
+</p>
+
+
+<input 
+type="file"
+id="imageInput"
+accept="image/*">
+
+
+
+<button onclick="convertImage()">
+Convert JPG
+</button>
+
+
+<div id="convertResult"></div>
+
+
+<br>
+
+
+<button onclick="backMenu()">
+Back
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+<script>
+
+
+let modeValue=90;
+let modeType="days";
+
+
+
+function openAdmin(){
+
+menu.classList.add("hidden");
+admin.classList.remove("hidden");
+
+}
+
+
+function openConverter(){
+
+menu.classList.add("hidden");
+converter.classList.remove("hidden");
+
+}
+
+
+
+function backMenu(){
+
+menu.classList.remove("hidden");
+
+admin.classList.add("hidden");
+
+converter.classList.add("hidden");
+
+}
+
+
+
+function setMode(value,type,el,index){
+
+modeValue=value;
+modeType=type;
+
+
+document.querySelectorAll('.opt-btn')
+.forEach(btn=>btn.classList.remove('active'));
+
+
+el.classList.add('active');
+
+
+if(index==1)
+desc.innerText=
+"Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
+
+
+if(index==2)
+desc.innerText=
+"Silahkan masukkan tanggal Klaim Kacamata terakhir:";
+
+
+if(index==3)
+desc.innerText=
+"Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
+
+
+}
+
+
+
+
+function calculateDate(){
+
+
+let input=startDate.value;
+
+
+if(!input){
+
+result.innerText="Please select a date";
+return;
+
+}
+
+
+let date=new Date(input);
+
+
+
+if(modeType=="days")
+date.setDate(date.getDate()+modeValue);
+
+
+else
+date.setFullYear(date.getFullYear()+modeValue);
+
+
+
+result.innerHTML=
+`Result: <span class="highlight">
+${date.toLocaleDateString()}
+</span>`;
+
+}
+
+
+
+
+
+// IMAGE CONVERTER
+
+
+function convertImage(){
+
+
+let file=
+document.getElementById("imageInput").files[0];
+
+
+if(!file){
+
+convertResult.innerText=
+"Choose image first";
+
+return;
+
+}
+
+
+
+let img=new Image();
+
+
+let reader=new FileReader();
+
+
+
+reader.onload=function(e){
+
+img.src=e.target.result;
+
+}
+
+
+
+img.onload=function(){
+
+
+let canvas=document.createElement("canvas");
+
+let ctx=canvas.getContext("2d");
+
+
+
+let scale=1;
+
+
+canvas.width=img.width;
+canvas.height=img.height;
+
+
+ctx.drawImage(img,0,0);
+
+
+
+let quality=.9;
+
+
+function compress(){
+
+
+canvas.toBlob(function(blob){
+
+
+if(blob.size>1024*1024 && quality>.1){
+
+quality-=.1;
+compress();
+
+}
+
+else{
+
+
+let a=document.createElement("a");
+
+a.href=
+URL.createObjectURL(blob);
+
+
+a.download="converted.jpg";
+
+a.click();
+
+
+convertResult.innerHTML=
+"Done ✔ JPG under 1MB";
+
+
+}
+
+
+
+},"image/jpeg",quality);
+
+
+}
+
+
+
+compress();
+
+
+}
+
+
+
+reader.readAsDataURL(file);
+
+
+}
+
+
+
+</script>
+
 
 </body>
 </html>
