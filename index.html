@@ -23,7 +23,6 @@ box-sizing:border-box;
 font-family:'Playfair Display',serif;
 }
 
-
 body{
 min-height:100vh;
 display:flex;
@@ -33,10 +32,7 @@ padding:20px;
 background:linear-gradient(120deg,#0f172a,#1e293b,#0f172a);
 }
 
-
-
 .card{
-
 background:rgba(255,255,255,.08);
 backdrop-filter:blur(25px);
 border-radius:28px;
@@ -46,53 +42,37 @@ max-width:100%;
 text-align:center;
 border:1px solid rgba(255,255,255,.15);
 box-shadow:0 10px 40px rgba(0,0,0,.5);
-
 }
 
 
-
 h2{
-
 font-size:40px;
 color:#f5f5f7;
-
 }
 
 
 .subtitle{
-
 font-size:14px;
 color:rgba(255,255,255,.6);
 margin-bottom:20px;
-
 }
-
 
 
 .main-option{
-
 padding:15px;
 margin:12px 0;
 border-radius:14px;
-
 background:rgba(255,255,255,.12);
-
 color:white;
 cursor:pointer;
-
 transition:.3s;
-
 }
-
 
 
 .main-option:hover{
-
 background:linear-gradient(135deg,#ffe600,#ffd000);
 color:#111;
-
 }
-
 
 
 .hidden{
@@ -100,110 +80,73 @@ display:none;
 }
 
 
-
 .desc{
-
 margin:20px 0;
 color:white;
-
 }
 
 
-
 .options{
-
 display:flex;
 gap:10px;
 flex-wrap:wrap;
 justify-content:center;
-
 }
-
 
 
 .opt-btn{
-
 padding:10px;
 border-radius:10px;
-
 background:rgba(255,255,255,.1);
-
 border:1px solid rgba(255,255,255,.2);
-
 color:white;
 cursor:pointer;
-
 font-size:13px;
-
 }
-
 
 
 .opt-btn.active{
-
 background:#ffe600;
 color:#111;
-
 }
-
-
 
 
 input{
-
 width:100%;
 padding:15px;
 margin:15px 0;
-
 border-radius:14px;
 border:none;
-
 background:rgba(255,255,255,.12);
 color:white;
-
 }
-
 
 
 button{
-
 width:100%;
 padding:15px;
-
 border:none;
 border-radius:14px;
-
 cursor:pointer;
-
 background:linear-gradient(135deg,#ffe600,#ffd000);
-
 font-weight:600;
-
 }
-
 
 
 #result,
-#convertResult,
 #sklResult,
 #jpgPdfResult,
 #pdfJpgResult{
-
 margin-top:15px;
 color:white;
-
 }
-
 
 
 .highlight{
-
 color:#ff453a;
-
 }
 
 </style>
-
 
 </head>
 
@@ -214,38 +157,26 @@ color:#ff453a;
 <div class="card">
 
 
-<h2 id="title">
-PIPP-Calc
-</h2>
+<h2 id="title">PIPP-Calc</h2>
 
 
 <div class="subtitle" id="subtitle">
-
 Automatic BPJS Date Calculator
-
 </div>
 
 
-
-
-<!-- MENU -->
 
 
 <div id="menu">
 
 
 <div class="main-option" onclick="openAdmin()">
-
 PIPP Administration
-
 </div>
-
 
 
 <div class="main-option" onclick="openConverter()">
-
 Converter
-
 </div>
 
 
@@ -253,21 +184,15 @@ Converter
 
 
 
-
-
-
-
-<!-- ADMIN -->
 
 
 <div id="admin" class="hidden">
 
 
 <p class="desc" id="desc">
-
 Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
-
 </p>
+
 
 
 <div class="options">
@@ -275,26 +200,19 @@ Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
 
 <div class="opt-btn active"
 onclick="setMode(90,'days',this,1)">
-
 Masa Aktif Surat Rujukan
-
 </div>
 
 
 <div class="opt-btn"
 onclick="setMode(23,'days',this,2)">
-
 Batas Klaim Kacamata ke Optik
-
 </div>
-
 
 
 <div class="opt-btn"
 onclick="setMode(2,'years',this,3)">
-
 Klaim 1x 2 Th
-
 </div>
 
 
@@ -305,23 +223,21 @@ Klaim 1x 2 Th
 <input type="date" id="startDate">
 
 
-<button onclick="calculateDate">
 
+<button onclick="calculateDate()">
 Calculate Date
-
 </button>
+
 
 
 <div id="result"></div>
 
 
+
 <br>
 
-
 <button onclick="backMenu()">
-
 Back
-
 </button>
 
 
@@ -332,60 +248,32 @@ Back
 
 
 
-
-
-
-
-<!-- CONVERTER -->
-
-
 <div id="converter" class="hidden">
 
 
-<div id="converterMenu">
-
 
 <div class="main-option" onclick="openSKL()">
-
 Converter SKL BBL
-
 </div>
-
 
 
 <div class="main-option" onclick="openJPGPDF()">
-
 Converter JPG to PDF
-
 </div>
-
 
 
 <div class="main-option" onclick="openPDFJPG()">
-
 Converter PDF to JPG
-
 </div>
 
 
-</div>
-
-
-
-
-
-
-
-<!-- SKL -->
 
 
 <div id="sklBox" class="hidden">
 
 
 <p class="desc">
-
 Convert image → JPG under 900 KB
-
 </p>
 
 
@@ -393,9 +281,7 @@ Convert image → JPG under 900 KB
 
 
 <button onclick="convertSKL()">
-
 Convert JPG
-
 </button>
 
 
@@ -409,17 +295,11 @@ Convert JPG
 
 
 
-
-<!-- JPG PDF -->
-
-
 <div id="jpgpdfBox" class="hidden">
 
 
 <p class="desc">
-
 Convert image into PDF
-
 </p>
 
 
@@ -427,9 +307,7 @@ Convert image into PDF
 
 
 <button onclick="convertJPGPDF()">
-
 Convert PDF
-
 </button>
 
 
@@ -444,16 +322,11 @@ Convert PDF
 
 
 
-<!-- PDF JPG -->
-
-
 <div id="pdfjpgBox" class="hidden">
 
 
 <p class="desc">
-
 Convert PDF into JPG
-
 </p>
 
 
@@ -461,9 +334,7 @@ Convert PDF into JPG
 
 
 <button onclick="convertPDFJPG()">
-
 Convert JPG
-
 </button>
 
 
@@ -474,25 +345,15 @@ Convert JPG
 
 
 
-
-
 <br>
 
 
 <button onclick="backMenu()">
-
 Back
-
 </button>
 
 
-
 </div>
-
-
-
-
-
 
 
 </div>
@@ -512,7 +373,6 @@ let modeType="days";
 
 function openAdmin(){
 
-
 menu.classList.add("hidden");
 
 admin.classList.remove("hidden");
@@ -523,15 +383,11 @@ title.innerText="PIPP-Calc";
 subtitle.innerText=
 "Automatic BPJS Date Calculator";
 
-
 }
 
 
 
-
-
 function openConverter(){
-
 
 menu.classList.add("hidden");
 
@@ -543,19 +399,13 @@ title.innerText="PIPP-Converter";
 subtitle.innerText=
 "Image Format Converter";
 
-
 }
-
-
-
 
 
 
 function backMenu(){
 
-
 menu.classList.remove("hidden");
-
 
 admin.classList.add("hidden");
 
@@ -566,7 +416,6 @@ title.innerText="PIPP-Calc";
 
 subtitle.innerText=
 "Automatic BPJS Date Calculator";
-
 
 }
 
@@ -584,7 +433,6 @@ modeValue=v;
 modeType=t;
 
 
-
 document.querySelectorAll(".opt-btn")
 .forEach(x=>x.classList.remove("active"));
 
@@ -594,24 +442,17 @@ e.classList.add("active");
 
 
 if(i==1)
-desc.innerText=
-"Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
+desc.innerText="Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
 
 
 if(i==2)
-desc.innerText=
-"Silahkan masukkan tanggal Klaim Kacamata terakhir:";
+desc.innerText="Silahkan masukkan tanggal Klaim Kacamata terakhir:";
 
 
 if(i==3)
-desc.innerText=
-"Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
-
+desc.innerText="Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 
 }
-
-
-
 
 
 
@@ -619,37 +460,52 @@ desc.innerText=
 function calculateDate(){
 
 
-let d=new Date(startDate.value);
+let input =
+document.getElementById("startDate").value;
 
 
-if(!startDate.value){
 
-result.innerText="Choose date";
+if(!input){
+
+document.getElementById("result").innerText =
+"Choose date";
 
 return;
 
 }
 
 
-if(modeType=="days")
-d.setDate(d.getDate()+modeValue);
 
-else
-d.setFullYear(d.getFullYear()+modeValue);
+let d = new Date(input);
 
 
 
-result.innerHTML=
+if(modeType=="days"){
 
-`Result: <span class="highlight">
-
-${d.toLocaleDateString()}
-
-</span>`;
-
+d.setDate(
+d.getDate()+modeValue
+);
 
 }
 
+else{
+
+d.setFullYear(
+d.getFullYear()+modeValue
+);
+
+}
+
+
+
+
+document.getElementById("result").innerHTML =
+
+`Result: <span class="highlight">
+${d.toLocaleDateString('en-GB')}
+</span>`;
+
+}
 
 
 
@@ -659,11 +515,8 @@ ${d.toLocaleDateString()}
 function hideBoxes(){
 
 sklBox.classList.add("hidden");
-
 jpgpdfBox.classList.add("hidden");
-
 pdfjpgBox.classList.add("hidden");
-
 
 }
 
@@ -678,7 +531,6 @@ sklBox.classList.remove("hidden");
 }
 
 
-
 function openJPGPDF(){
 
 hideBoxes();
@@ -686,7 +538,6 @@ hideBoxes();
 jpgpdfBox.classList.remove("hidden");
 
 }
-
 
 
 function openPDFJPG(){
@@ -702,17 +553,11 @@ pdfjpgBox.classList.remove("hidden");
 
 
 
-
-
-
 function convertSKL(){
-
 
 let file=sklInput.files[0];
 
-
 if(!file)return;
-
 
 
 let img=new Image();
@@ -734,7 +579,6 @@ canvas.height=img.height;
 
 canvas.getContext("2d")
 .drawImage(img,0,0);
-
 
 
 let quality=.9;
@@ -760,7 +604,8 @@ else{
 
 let a=document.createElement("a");
 
-a.href=URL.createObjectURL(blob);
+a.href=
+URL.createObjectURL(blob);
 
 a.download="SKL_BBL.jpg";
 
@@ -769,6 +614,7 @@ a.click();
 
 sklResult.innerText=
 "Done ✔ JPG under 900KB";
+
 
 }
 
@@ -779,7 +625,6 @@ sklResult.innerText=
 }
 
 
-
 compress();
 
 
@@ -788,11 +633,7 @@ compress();
 
 reader.readAsDataURL(file);
 
-
 }
-
-
-
 
 
 
@@ -804,14 +645,13 @@ function convertJPGPDF(){
 
 let file=jpgPdfInput.files[0];
 
-
 let reader=new FileReader();
 
 
 reader.onload=function(e){
 
 
-let pdf=
+let pdf =
 new jspdf.jsPDF();
 
 
@@ -846,13 +686,10 @@ reader.readAsDataURL(file);
 
 
 
-
-
 function convertPDFJPG(){
 
 
 let file=pdfInput.files[0];
-
 
 let reader=new FileReader();
 
@@ -869,11 +706,11 @@ pdf.getPage(1)
 .then(page=>{
 
 
-let viewport=
+let viewport =
 page.getViewport({scale:2});
 
 
-let canvas=
+let canvas =
 document.createElement("canvas");
 
 
@@ -896,7 +733,8 @@ viewport:viewport
 let a=document.createElement("a");
 
 
-a.href=canvas.toDataURL("image/jpeg");
+a.href=
+canvas.toDataURL("image/jpeg");
 
 
 a.download="converted.jpg";
@@ -921,16 +759,12 @@ pdfJpgResult.innerText=
 }
 
 
-
 reader.readAsArrayBuffer(file);
-
 
 }
 
 
-
 </script>
-
 
 </body>
 </html>
