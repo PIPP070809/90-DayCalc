@@ -1,6 +1,9 @@
 function calculateDate(){
 
-let input = document.getElementById("startDate").value;
+let input =
+document.getElementById("startDate").value;
+
+
 
 if(!input){
 
@@ -12,7 +15,9 @@ return;
 }
 
 
+
 let d = new Date(input);
+
 
 
 if(modeType=="days"){
@@ -32,7 +37,10 @@ d.getFullYear()+modeValue
 }
 
 
-let months = [
+
+// ===== FORMAT TANGGAL INDONESIA =====
+
+let bulan = [
 "Januari",
 "Februari",
 "Maret",
@@ -48,19 +56,21 @@ let months = [
 ];
 
 
-let formattedDate =
+let hasilTanggal =
 d.getDate()
 +" "
-+months[d.getMonth()]
++bulan[d.getMonth()]
 +" "
 +d.getFullYear();
 
 
 
+// ===== OUTPUT =====
+
 document.getElementById("result").innerHTML =
 
 `Result: <span class="highlight">
-${formattedDate}
+${hasilTanggal}
 </span>`;
 
 }
