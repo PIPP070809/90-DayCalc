@@ -159,7 +159,6 @@ color:#ff453a;
 
 }
 
-
 </style>
 
 </head>
@@ -171,9 +170,9 @@ color:#ff453a;
 <div class="card">
 
 
-<h2>PIPP-Calc</h2>
+<h2 id="title">PIPP-Calc</h2>
 
-<div class="subtitle">
+<div class="subtitle" id="subtitle">
 Automatic BPJS Date Calculator
 </div>
 
@@ -195,6 +194,7 @@ Converter
 
 
 </div>
+
 
 
 
@@ -258,15 +258,17 @@ Back
 
 
 
+
 <!-- CONVERTER -->
 
 
 <div id="converter" class="hidden">
 
 
-<p class="desc">
-Convert Image to JPG (&lt;1MB)
+<p class="desc" id="converterDesc">
+Silahkan masukkan gambar yang ingin anda ubah menjadi JPG &lt; 1 Mb
 </p>
+
 
 
 <input 
@@ -301,6 +303,7 @@ Back
 
 
 
+
 <script>
 
 
@@ -312,17 +315,39 @@ let modeType="days";
 function openAdmin(){
 
 menu.classList.add("hidden");
+
 admin.classList.remove("hidden");
 
+
+document.getElementById("title").innerText =
+"PIPP-Calc";
+
+
+document.getElementById("subtitle").innerText =
+"Automatic BPJS Date Calculator";
+
+
 }
+
+
 
 
 function openConverter(){
 
 menu.classList.add("hidden");
+
 converter.classList.remove("hidden");
 
+
+document.getElementById("title").innerText =
+"PIPP-Converter";
+
+
+document.getElementById("subtitle").innerText =
+"Image Format Converter";
+
 }
+
 
 
 
@@ -330,43 +355,68 @@ function backMenu(){
 
 menu.classList.remove("hidden");
 
+
 admin.classList.add("hidden");
+
 
 converter.classList.add("hidden");
 
+
+
+document.getElementById("title").innerText =
+"PIPP-Calc";
+
+
+document.getElementById("subtitle").innerText =
+"Automatic BPJS Date Calculator";
+
 }
+
+
+
 
 
 
 function setMode(value,type,el,index){
 
 modeValue=value;
+
 modeType=type;
+
 
 
 document.querySelectorAll('.opt-btn')
 .forEach(btn=>btn.classList.remove('active'));
 
 
+
 el.classList.add('active');
 
 
+
 if(index==1)
-desc.innerText=
+
+desc.innerText =
 "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
 
 
+
 if(index==2)
-desc.innerText=
+
+desc.innerText =
 "Silahkan masukkan tanggal Klaim Kacamata terakhir:";
 
 
+
 if(index==3)
-desc.innerText=
+
+desc.innerText =
 "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 
 
 }
+
+
 
 
 
@@ -377,33 +427,47 @@ function calculateDate(){
 let input=startDate.value;
 
 
+
 if(!input){
 
 result.innerText="Please select a date";
+
 return;
 
 }
+
 
 
 let date=new Date(input);
 
 
 
+
 if(modeType=="days")
+
 date.setDate(date.getDate()+modeValue);
 
 
+
 else
+
 date.setFullYear(date.getFullYear()+modeValue);
 
 
 
+
 result.innerHTML=
+
 `Result: <span class="highlight">
+
 ${date.toLocaleDateString()}
+
 </span>`;
 
 }
+
+
+
 
 
 
@@ -415,13 +479,14 @@ ${date.toLocaleDateString()}
 function convertImage(){
 
 
-let file=
+let file =
 document.getElementById("imageInput").files[0];
+
 
 
 if(!file){
 
-convertResult.innerText=
+convertResult.innerText =
 "Choose image first";
 
 return;
@@ -430,8 +495,8 @@ return;
 
 
 
-let img=new Image();
 
+let img=new Image();
 
 let reader=new FileReader();
 
@@ -445,20 +510,21 @@ img.src=e.target.result;
 
 
 
+
 img.onload=function(){
 
 
 let canvas=document.createElement("canvas");
 
+
 let ctx=canvas.getContext("2d");
 
 
 
-let scale=1;
-
-
 canvas.width=img.width;
+
 canvas.height=img.height;
+
 
 
 ctx.drawImage(img,0,0);
@@ -468,42 +534,51 @@ ctx.drawImage(img,0,0);
 let quality=.9;
 
 
+
 function compress(){
 
 
 canvas.toBlob(function(blob){
 
 
+
 if(blob.size>1024*1024 && quality>.1){
 
+
 quality-=.1;
+
 compress();
 
+
 }
+
 
 else{
 
 
 let a=document.createElement("a");
 
+
 a.href=
 URL.createObjectURL(blob);
 
 
+
 a.download="converted.jpg";
+
 
 a.click();
 
 
-convertResult.innerHTML=
-"Done ✔ JPG under 1MB";
 
+convertResult.innerHTML =
+"Done ✔ JPG under 1MB";
 
 }
 
 
-
 },"image/jpeg",quality);
+
 
 
 }
@@ -521,7 +596,6 @@ reader.readAsDataURL(file);
 
 
 }
-
 
 
 </script>
