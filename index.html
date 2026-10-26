@@ -7,448 +7,145 @@
 <title>PIPP-Calc</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Playfair Display', serif;
-}
-
-body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background: #f5f7fb;
-}
-
-.card {
-    background: #fff;
-    border-radius: 22px;
-    padding: 40px;
-    width: 520px;
-    max-width: 100%;
-    text-align: center;
-    box-shadow: 0 15px 45px rgba(0,0,0,.12);
-}
-
-h2 {
-    font-size: 36px;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 28px;
-}
-
-.main-option {
-    padding: 16px;
-    margin: 12px 0;
-    border-radius: 15px;
-    background: #f2f5fb;
-    color: #555;
-    cursor: pointer;
-    transition: .25s;
-    border: 1px solid #e8edf5;
-}
-
-.main-option:hover {
-    background: linear-gradient(135deg,#25c8e8,#249cf5);
-    color: white;
-    transform: translateY(-2px);
-}
-
-.hidden {
-    display: none !important;
-}
-
-.desc {
-    margin: 18px 0;
-    color: #777;
-    font-size: 14px;
-    line-height: 1.7;
-}
-
-.options {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.opt-btn {
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: #f3f5fa;
-    border: 1px solid #e5e8ef;
-    color: #555;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.opt-btn.active {
-    background: linear-gradient(135deg,#25c8e8,#249cf5);
-    color: white;
-    border: none;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    margin: 16px 0;
-    border: 1px solid #dfe5ef;
-    border-radius: 12px;
-    background: #fafcff;
-    color: #333;
-    font-size: 14px;
-}
-
-input[type="file"] {
-    cursor: pointer;
-}
-
-button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 8px;
-    border: none;
-    border-radius: 13px;
-    cursor: pointer;
-    background: linear-gradient(135deg,#27d3e9,#2498f5);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 5px 15px rgba(36,156,245,.2);
-    transition: .25s;
-}
-
-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(36,156,245,.3);
-}
-
-button:disabled {
-    opacity: .55;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.secondary-btn {
-    background: #edf1f7;
-    color: #555;
-    box-shadow: none;
-}
-
-#result,
-#sklResult,
-#jpgPdfResult,
-#pdfJpgResult {
-    margin-top: 15px;
-    color: #555;
-    font-size: 13px;
-    line-height: 1.7;
-    overflow-wrap: anywhere;
-}
-
-.highlight {
-    color: #ff4d4d;
-    font-weight: 600;
-}
-
-.converter-panel {
-    text-align: left;
-    margin-top: 18px;
-}
-
-.converter-panel .desc {
-    text-align: center;
-}
-
-.upload-area {
-    display: block;
-    border: 2px dashed #cbd9eb;
-    border-radius: 16px;
-    padding: 24px 14px;
-    background: #f8fbff;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.upload-area:hover {
-    border-color: #2498f5;
-    background: #f0f8ff;
-}
-
-.upload-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
-}
-
-.upload-title {
-    font-size: 14px;
-    color: #444;
-    font-weight: 600;
-}
-
-.upload-subtitle {
-    font-size: 12px;
-    color: #999;
-    margin-top: 6px;
-}
-
-.upload-area input[type="file"] {
-    margin-bottom: 0;
-    background: transparent;
-    border: none;
-    padding: 12px 0 0;
-    font-size: 12px;
-}
-
-.file-info {
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 10px;
-    background: #f1f6fc;
-    color: #526176;
-    font-size: 12px;
-    line-height: 1.7;
-    overflow-wrap: anywhere;
-}
-
-.progress-track {
-    width: 100%;
-    height: 7px;
-    border-radius: 10px;
-    background: #e9eef5;
-    margin-top: 14px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    width: 0;
-    height: 100%;
-    border-radius: 10px;
-    background: linear-gradient(90deg,#25c8e8,#249cf5);
-    transition: width .2s;
-}
-
-.status-success {
-    color: #16844a !important;
-}
-
-.status-error {
-    color: #d53d49 !important;
-}
-
-.back-button {
-    margin-top: 24px;
-}
-
-@media (max-width: 480px) {
-    .card {
-        padding: 26px 20px;
-    }
-
-    h2 {
-        font-size: 30px;
-    }
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Playfair Display',serif}
+body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:#f5f7fb}
+.card{background:#fff;border-radius:22px;padding:40px;width:520px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12)}
+h2{font-size:36px;color:#333;margin-bottom:8px}
+.subtitle{font-size:14px;color:#999;margin-bottom:28px}
+.main-option{padding:16px;margin:12px 0;border-radius:15px;background:#f2f5fb;color:#555;cursor:pointer;transition:.25s;border:1px solid #e8edf5}
+.main-option:hover{background:linear-gradient(135deg,#25c8e8,#249cf5);color:white;transform:translateY(-2px)}
+.hidden{display:none!important}
+.desc{margin:18px 0;color:#777;font-size:14px;line-height:1.7}
+.options{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.opt-btn{padding:10px 12px;border-radius:10px;background:#f3f5fa;border:1px solid #e5e8ef;color:#555;cursor:pointer;font-size:12px}
+.opt-btn.active{background:linear-gradient(135deg,#25c8e8,#249cf5);color:white;border:none}
+input{width:100%;padding:14px;margin:16px 0;border:1px solid #dfe5ef;border-radius:12px;background:#fafcff;color:#333;font-size:14px}
+input[type=file]{cursor:pointer}
+button{width:100%;padding:14px;margin-top:8px;border:none;border-radius:13px;cursor:pointer;background:linear-gradient(135deg,#27d3e9,#2498f5);color:white;font-weight:600;font-size:14px;box-shadow:0 5px 15px rgba(36,156,245,.2);transition:.25s}
+button:hover{transform:translateY(-1px)}
+button:disabled{opacity:.55;cursor:wait;transform:none}
+.secondary-btn{background:#edf1f7;color:#555;box-shadow:none}
+#result,#sklResult,#jpgPdfResult,#pdfJpgResult{margin-top:15px;color:#555;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.highlight{color:#ff4d4d;font-weight:600}
+.converter-panel{text-align:left;margin-top:18px}
+.converter-panel .desc{text-align:center}
+.upload-area{display:block;border:2px dashed #cbd9eb;border-radius:16px;padding:24px 14px;background:#f8fbff;text-align:center;cursor:pointer}
+.upload-area:hover{border-color:#2498f5;background:#f0f8ff}
+.upload-icon{font-size:32px;margin-bottom:8px}
+.upload-title{font-size:14px;color:#444;font-weight:600}
+.upload-subtitle{font-size:12px;color:#999;margin-top:6px}
+.upload-area input[type=file]{margin-bottom:0;background:transparent;border:none;padding:12px 0 0;font-size:12px}
+.file-info{margin-top:12px;padding:12px;border-radius:10px;background:#f1f6fc;color:#526176;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.progress-track{width:100%;height:7px;border-radius:10px;background:#e9eef5;margin-top:14px;overflow:hidden}
+.progress-bar{width:0;height:100%;border-radius:10px;background:linear-gradient(90deg,#25c8e8,#249cf5);transition:width .2s}
+.status-success{color:#16844a!important}
+.status-error{color:#d53d49!important}
+.back-button{margin-top:24px}
+@media(max-width:480px){.card{padding:26px 20px}h2{font-size:30px}}
 </style>
 </head>
 
 <body>
 <div class="card">
+<h2 id="title">PIPP-Calc</h2>
+<div class="subtitle" id="subtitle">Automatic BPJS Date Calculator</div>
 
-    <h2 id="title">PIPP-Calc</h2>
-    <div class="subtitle" id="subtitle">
-        Automatic BPJS Date Calculator
+<div id="menu">
+    <div class="main-option" onclick="openAdmin()">PIPP Administration</div>
+    <div class="main-option" onclick="openConverter()">Converter</div>
+</div>
+
+<div id="admin" class="hidden">
+    <p class="desc" id="desc">Silahkan masukkan tanggal Surat Rujukan dikeluarkan:</p>
+    <div class="options">
+        <div class="opt-btn active" onclick="setMode(90,'days',this,1)">Masa Aktif Surat Rujukan</div>
+        <div class="opt-btn" onclick="setMode(23,'days',this,2)">Batas Klaim Kacamata ke Optik</div>
+        <div class="opt-btn" onclick="setMode(2,'years',this,3)">Klaim 1x 2 Th</div>
+    </div>
+    <input type="date" id="startDate">
+    <button onclick="calculateDate()">Calculate Date</button>
+    <div id="result"></div>
+    <button class="secondary-btn back-button" onclick="backMenu()">Back</button>
+</div>
+
+<div id="converter" class="hidden">
+    <div id="converterMenu">
+        <div class="main-option" onclick="openSKL()">Converter SKL BBL</div>
+        <div class="main-option" onclick="openJPGPDF()">Converter JPG to PDF</div>
+        <div class="main-option" onclick="openPDFJPG()">Converter PDF to JPG</div>
     </div>
 
-    <div id="menu">
-        <div class="main-option" onclick="openAdmin()">
-            PIPP Administration
-        </div>
-
-        <div class="main-option" onclick="openConverter()">
-            Converter
-        </div>
+    <div id="sklBox" class="hidden converter-panel">
+        <p class="desc">Compress image into JPG under 100 KB.</p>
+        <label class="upload-area">
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Choose an image</div>
+            <div class="upload-subtitle">Select a photo or document image</div>
+            <input type="file" id="sklInput" accept="image/*">
+        </label>
+        <div id="sklFileInfo" class="file-info hidden"></div>
+        <button id="sklButton" onclick="convertSKL()">Compress to JPG</button>
+        <div id="sklResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
     </div>
 
-    <!-- ADMINISTRATION -->
-    <div id="admin" class="hidden">
-
-        <p class="desc" id="desc">
-            Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
-        </p>
-
-        <div class="options">
-            <div class="opt-btn active"
-                 onclick="setMode(90,'days',this,1)">
-                Masa Aktif Surat Rujukan
-            </div>
-
-            <div class="opt-btn"
-                 onclick="setMode(23,'days',this,2)">
-                Batas Klaim Kacamata ke Optik
-            </div>
-
-            <div class="opt-btn"
-                 onclick="setMode(2,'years',this,3)">
-                Klaim 1x 2 Th
-            </div>
-        </div>
-
-        <input type="date" id="startDate">
-
-        <button onclick="calculateDate()">Calculate Date</button>
-
-        <div id="result"></div>
-
-        <button class="secondary-btn back-button"
-                onclick="backMenu()">Back</button>
+    <div id="jpgpdfBox" class="hidden converter-panel">
+        <p class="desc">Convert images into PDF. The original image content is preserved, without OCR or rewriting text.</p>
+        <label class="upload-area">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-title">Select image files</div>
+            <div class="upload-subtitle">Multiple images are supported. Each image becomes one PDF page.</div>
+            <input type="file" id="jpgPdfInput" accept="image/*" multiple>
+        </label>
+        <div id="jpgPdfFileInfo" class="file-info hidden"></div>
+        <button id="jpgPdfButton" onclick="convertJPGPDF()">Convert to PDF</button>
+        <div class="progress-track hidden" id="jpgPdfProgressTrack"><div class="progress-bar" id="jpgPdfProgressBar"></div></div>
+        <div id="jpgPdfResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
     </div>
 
-    <!-- CONVERTER -->
-    <div id="converter" class="hidden">
-
-        <div id="converterMenu">
-            <div class="main-option" onclick="openSKL()">
-                Converter SKL BBL
-            </div>
-
-            <div class="main-option" onclick="openJPGPDF()">
-                JPG to PDF
-            </div>
-
-            <div class="main-option" onclick="openPDFJPG()">
-                PDF to JPG
-            </div>
-        </div>
-
-        <!-- SKL BBL -->
-        <div id="sklBox" class="hidden converter-panel">
-            <p class="desc">
-                Compress image into JPG under 100 KB.
-            </p>
-
-            <label class="upload-area">
-                <div class="upload-icon">📄</div>
-                <div class="upload-title">Choose an image</div>
-                <div class="upload-subtitle">
-                    Select a photo or document image
-                </div>
-                <input type="file" id="sklInput" accept="image/*">
-            </label>
-
-            <div id="sklFileInfo" class="file-info hidden"></div>
-
-            <button id="sklButton" onclick="convertSKL()">
-                Compress to JPG
-            </button>
-
-            <div id="sklResult" aria-live="polite"></div>
-
-            <button class="secondary-btn" onclick="backConverter()">
-                Back to Converter
-            </button>
-        </div>
-
-        <!-- JPG TO PDF -->
-        <div id="jpgpdfBox" class="hidden converter-panel">
-
-            <p class="desc">
-                Convert your images into a standard PDF document.
-                Images are fitted proportionally without cropping or stretching.
-            </p>
-
-            <label class="upload-area">
-                <div class="upload-icon">🖼️</div>
-                <div class="upload-title">Select JPG or image files</div>
-                <div class="upload-subtitle">
-                    You can select multiple images. Each image becomes one PDF page.
-                </div>
-                <input
-                    type="file"
-                    id="jpgPdfInput"
-                    accept="image/jpeg,image/png,image/webp,image/bmp"
-                    multiple>
-            </label>
-
-            <div id="jpgPdfFileInfo" class="file-info hidden"></div>
-
-            <button id="jpgPdfButton" onclick="convertJPGPDF()">
-                Convert to PDF
-            </button>
-
-            <div class="progress-track hidden" id="jpgPdfProgressTrack">
-                <div class="progress-bar" id="jpgPdfProgressBar"></div>
-            </div>
-
-            <div id="jpgPdfResult" aria-live="polite"></div>
-
-            <button class="secondary-btn" onclick="backConverter()">
-                Back to Converter
-            </button>
-        </div>
-
-        <!-- PDF TO JPG -->
-        <div id="pdfjpgBox" class="hidden converter-panel">
-
-            <p class="desc">
-                Convert every page of your PDF into a JPG image.
-                All pages will be packaged into one ZIP file for easy downloading.
-            </p>
-
-            <label class="upload-area">
-                <div class="upload-icon">📑</div>
-                <div class="upload-title">Select a PDF file</div>
-                <div class="upload-subtitle">
-                    All pages will be converted, not just the first page.
-                </div>
-                <input type="file" id="pdfInput" accept="application/pdf,.pdf">
-            </label>
-
-            <div id="pdfFileInfo" class="file-info hidden"></div>
-
-            <button id="pdfJpgButton" onclick="convertPDFJPG()">
-                Convert to JPG
-            </button>
-
-            <div class="progress-track hidden" id="pdfJpgProgressTrack">
-                <div class="progress-bar" id="pdfJpgProgressBar"></div>
-            </div>
-
-            <div id="pdfJpgResult" aria-live="polite"></div>
-
-            <button class="secondary-btn" onclick="backConverter()">
-                Back to Converter
-            </button>
-        </div>
-
-        <button class="secondary-btn back-button"
-                id="converterBackButton"
-                onclick="backMenu()">Back to Main Menu</button>
+    <div id="pdfjpgBox" class="hidden converter-panel">
+        <p class="desc">Convert every PDF page into a JPG image. The PDF page is rendered directly; text is not retyped or reconstructed.</p>
+        <label class="upload-area">
+            <div class="upload-icon">📑</div>
+            <div class="upload-title">Select a PDF file</div>
+            <div class="upload-subtitle">Every page will be converted and packaged into a ZIP file.</div>
+            <input type="file" id="pdfInput" accept="application/pdf,.pdf">
+        </label>
+        <div id="pdfFileInfo" class="file-info hidden"></div>
+        <button id="pdfJpgButton" onclick="convertPDFJPG()">Convert to JPG</button>
+        <div class="progress-track hidden" id="pdfJpgProgressTrack"><div class="progress-bar" id="pdfJpgProgressBar"></div></div>
+        <div id="pdfJpgResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
     </div>
+
+    <button class="secondary-btn back-button" id="converterBackButton" onclick="backMenu()">Back to Main Menu</button>
+</div>
 </div>
 
 <script>
-/* =====================================
-   INITIALIZATION
-===================================== */
+/* PDF.JS CONFIGURATION
+   Load character maps and standard font data to support PDFs
+   that use custom encodings or non-embedded standard fonts.
+*/
+const PDFJS_VERSION = "3.11.174";
+const PDFJS_BASE =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + "pdf.worker.min.js";
+
+const PDFJS_OPTIONS = {
+    cMapUrl: PDFJS_BASE + "cmaps/",
+    cMapPacked: true,
+    standardFontDataUrl: PDFJS_BASE + "standard_fonts/",
+    useSystemFonts: true,
+    isEvalSupported: false
+};
 
 let modeValue = 90;
 let modeType = "days";
@@ -477,13 +174,13 @@ const pdfJpgResult = $("pdfJpgResult");
 
 function formatBytes(bytes) {
     if (bytes < 1024) return bytes + " bytes";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
+    return (bytes / 1048576).toFixed(2) + " MB";
 }
 
-function setStatus(element, message, type = "") {
-    element.className = type;
-    element.textContent = message;
+function setStatus(el, message, type = "") {
+    el.className = type;
+    el.textContent = message;
 }
 
 function setProgress(trackId, barId, percent) {
@@ -496,35 +193,26 @@ function resetProgress(trackId, barId) {
     $(barId).style.width = "0%";
 }
 
+function safeFilename(name) {
+    return name.replace(/\.[^.]+$/, "")
+        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "_").trim() || "converted";
+}
+
 function downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
-
-function safeFilename(name) {
-    return name
-        .replace(/\.[^.]+$/, "")
-        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "_")
-        .trim() || "converted";
-}
-
-/* =====================================
-   NAVIGATION
-===================================== */
 
 function openAdmin() {
     menu.classList.add("hidden");
     converter.classList.add("hidden");
     admin.classList.remove("hidden");
-
     title.textContent = "PIPP-Calc";
     subtitle.textContent = "Automatic BPJS Date Calculator";
 }
@@ -533,10 +221,8 @@ function openConverter() {
     menu.classList.add("hidden");
     admin.classList.add("hidden");
     converter.classList.remove("hidden");
-
     title.textContent = "PIPP-Converter";
     subtitle.textContent = "Simple and Easy File Conversion";
-
     backConverter();
 }
 
@@ -544,15 +230,8 @@ function backMenu() {
     menu.classList.remove("hidden");
     admin.classList.add("hidden");
     converter.classList.add("hidden");
-
     title.textContent = "PIPP-Calc";
     subtitle.textContent = "Automatic BPJS Date Calculator";
-}
-
-function backConverter() {
-    hideBoxes();
-    converterMenu.classList.remove("hidden");
-    $("converterBackButton").classList.remove("hidden");
 }
 
 function hideBoxes() {
@@ -561,14 +240,18 @@ function hideBoxes() {
     pdfjpgBox.classList.add("hidden");
 }
 
+function backConverter() {
+    hideBoxes();
+    converterMenu.classList.remove("hidden");
+    $("converterBackButton").classList.remove("hidden");
+}
+
 function openSKL() {
     hideBoxes();
     converterMenu.classList.add("hidden");
     $("converterBackButton").classList.add("hidden");
     sklBox.classList.remove("hidden");
-
     sklResult.textContent = "";
-    $("sklFileInfo").classList.add("hidden");
 }
 
 function openJPGPDF() {
@@ -576,9 +259,7 @@ function openJPGPDF() {
     converterMenu.classList.add("hidden");
     $("converterBackButton").classList.add("hidden");
     jpgpdfBox.classList.remove("hidden");
-
     jpgPdfResult.textContent = "";
-    $("jpgPdfFileInfo").classList.add("hidden");
     resetProgress("jpgPdfProgressTrack", "jpgPdfProgressBar");
 }
 
@@ -587,121 +268,98 @@ function openPDFJPG() {
     converterMenu.classList.add("hidden");
     $("converterBackButton").classList.add("hidden");
     pdfjpgBox.classList.remove("hidden");
-
     pdfJpgResult.textContent = "";
-    $("pdfFileInfo").classList.add("hidden");
     resetProgress("pdfJpgProgressTrack", "pdfJpgProgressBar");
 }
 
-function setMode(v, t, element, index) {
+function setMode(v, t, el, i) {
     modeValue = v;
     modeType = t;
+    document.querySelectorAll(".opt-btn").forEach(x => x.classList.remove("active"));
+    el.classList.add("active");
 
-    document.querySelectorAll(".opt-btn").forEach(button => {
-        button.classList.remove("active");
-    });
-
-    element.classList.add("active");
-
-    if (index === 1) {
-        desc.textContent =
-            "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
-    } else if (index === 2) {
-        desc.textContent =
-            "Silahkan masukkan tanggal Klaim Kacamata terakhir:";
-    } else {
-        desc.textContent =
-            "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
-    }
+    desc.textContent = i === 1
+        ? "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:"
+        : i === 2
+        ? "Silahkan masukkan tanggal Klaim Kacamata terakhir:"
+        : "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 }
 
 function calculateDate() {
-    const input = $("startDate").value;
-    const result = $("result");
-
-    if (!input) {
-        result.textContent = "Choose date first.";
+    const value = $("startDate").value;
+    if (!value) {
+        $("result").textContent = "Choose date first.";
         return;
     }
 
-    const date = new Date(input + "T00:00:00");
+    const d = new Date(value + "T00:00:00");
 
     if (modeType === "days") {
-        date.setDate(date.getDate() + modeValue);
+        d.setDate(d.getDate() + modeValue);
     } else {
-        const originalDay = date.getDate();
-        date.setDate(1);
-        date.setFullYear(date.getFullYear() + modeValue);
-        const lastDay = new Date(
-            date.getFullYear(),
-            date.getMonth() + 1,
-            0
-        ).getDate();
-        date.setDate(Math.min(originalDay, lastDay));
+        const day = d.getDate();
+        d.setDate(1);
+        d.setFullYear(d.getFullYear() + modeValue);
+        const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        d.setDate(Math.min(day, last));
     }
 
-    result.innerHTML =
-        `Result: <span class="highlight">${date.toLocaleDateString("en-GB")}</span>`;
+    $("result").innerHTML =
+        `Result: <span class="highlight">${d.toLocaleDateString("en-GB")}</span>`;
 }
 
-/* =====================================
-   FILE SELECTION INFORMATION
-===================================== */
-
+/* File selection info */
 sklInput.addEventListener("change", () => {
-    const file = sklInput.files[0];
+    const f = sklInput.files[0];
     const info = $("sklFileInfo");
-
-    if (!file) {
-        info.classList.add("hidden");
-        return;
-    }
-
-    info.classList.remove("hidden");
-    info.textContent = `${file.name} · ${formatBytes(file.size)}`;
+    info.classList.toggle("hidden", !f);
+    if (f) info.textContent = `${f.name} · ${formatBytes(f.size)}`;
     sklResult.textContent = "";
 });
 
 jpgPdfInput.addEventListener("change", () => {
     const files = Array.from(jpgPdfInput.files);
     const info = $("jpgPdfFileInfo");
-
-    if (!files.length) {
-        info.classList.add("hidden");
-        return;
+    info.classList.toggle("hidden", !files.length);
+    if (files.length) {
+        info.textContent = `${files.length} image(s) · ${formatBytes(files.reduce((s, f) => s + f.size, 0))}`;
     }
-
-    info.classList.remove("hidden");
-
-    const totalSize = files.reduce((sum, file) => sum + file.size, 0);
-
-    info.textContent =
-        `${files.length} image(s) selected · Total ${formatBytes(totalSize)}`;
-
     jpgPdfResult.textContent = "";
-    resetProgress("jpgPdfProgressTrack", "jpgPdfProgressBar");
 });
 
 pdfInput.addEventListener("change", () => {
-    const file = pdfInput.files[0];
+    const f = pdfInput.files[0];
     const info = $("pdfFileInfo");
-
-    if (!file) {
-        info.classList.add("hidden");
-        return;
-    }
-
-    info.classList.remove("hidden");
-    info.textContent = `${file.name} · ${formatBytes(file.size)}`;
-
+    info.classList.toggle("hidden", !f);
+    if (f) info.textContent = `${f.name} · ${formatBytes(f.size)}`;
     pdfJpgResult.textContent = "";
-    resetProgress("pdfJpgProgressTrack", "pdfJpgProgressBar");
 });
 
-/* =====================================
-   SKL BBL: STRICTLY BELOW 100 KB
-===================================== */
+function loadImage(file) {
+    return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve(img);
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Unable to open this image."));
+        };
+        img.src = url;
+    });
+}
 
+function canvasToBlob(canvas, type, quality) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => blob
+            ? resolve(blob)
+            : reject(new Error("Unable to encode image.")), type, quality);
+    });
+}
+
+/* SKL BBL: STRICTLY UNDER 100 KB */
 async function convertSKL() {
     const file = sklInput.files[0];
     const button = $("sklButton");
@@ -712,132 +370,56 @@ async function convertSKL() {
         return;
     }
 
-    if (!file.type.startsWith("image/")) {
-        setStatus(sklResult, "The selected file is not an image.", "status-error");
-        return;
-    }
-
     button.disabled = true;
-    setStatus(sklResult, "Compressing image to under 100 KB...");
 
     try {
-        const image = await loadImage(file);
+        const img = await loadImage(file);
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-
-        let width = image.naturalWidth;
-        let height = image.naturalHeight;
+        let w = img.naturalWidth;
+        let h = img.naturalHeight;
         let quality = 0.85;
-        let blob = null;
 
-        for (let attempt = 0; attempt < 400; attempt++) {
-            canvas.width = width;
-            canvas.height = height;
+        for (let i = 0; i < 400; i++) {
+            canvas.width = w;
+            canvas.height = h;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
 
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, width, height);
-            ctx.drawImage(image, 0, 0, width, height);
-
-            blob = await canvasToBlob(canvas, "image/jpeg", quality);
-
-            if (!blob) {
-                throw new Error("JPEG encoding failed.");
-            }
+            const blob = await canvasToBlob(canvas, "image/jpeg", quality);
 
             if (blob.size < MAX_BYTES) {
                 downloadBlob(blob, "SKL_BBL.jpg");
-
-                setStatus(
-                    sklResult,
-                    `Success! JPG size: ${formatBytes(blob.size)}. The file is below 100 KB.`,
-                    "status-success"
-                );
-
+                setStatus(sklResult,
+                    `Success! JPG size: ${formatBytes(blob.size)}. Under 100 KB.`,
+                    "status-success");
                 return;
             }
 
             if (quality > 0.15) {
-                quality = Math.max(0.15, quality - 0.10);
+                quality = Math.max(0.15, quality - 0.1);
             } else {
-                if (width === 1 && height === 1) break;
-
-                const factor = Math.min(
-                    0.85,
-                    Math.sqrt((MAX_BYTES * 0.75) / blob.size)
-                );
-
-                width = Math.max(1, Math.floor(width * factor));
-                height = Math.max(1, Math.floor(height * factor));
+                const factor = Math.min(0.85, Math.sqrt(MAX_BYTES * 0.75 / blob.size));
+                w = Math.max(1, Math.floor(w * factor));
+                h = Math.max(1, Math.floor(h * factor));
                 quality = 0.82;
             }
         }
 
         throw new Error("Could not meet the 100 KB limit.");
-
-    } catch (error) {
-        console.error(error);
-        setStatus(
-            sklResult,
-            error.message || "Unable to compress the image.",
-            "status-error"
-        );
+    } catch (e) {
+        setStatus(sklResult, e.message || "Compression failed.", "status-error");
     } finally {
         button.disabled = false;
     }
 }
 
-/* =====================================
-   SHARED IMAGE HELPERS
-===================================== */
-
-function loadImage(file) {
-    return new Promise((resolve, reject) => {
-        const url = URL.createObjectURL(file);
-        const image = new Image();
-
-        image.onload = () => {
-            URL.revokeObjectURL(url);
-            resolve(image);
-        };
-
-        image.onerror = () => {
-            URL.revokeObjectURL(url);
-            reject(new Error("Unable to open this image."));
-        };
-
-        image.src = url;
-    });
-}
-
-function canvasToBlob(canvas, type, quality) {
-    return new Promise((resolve, reject) => {
-        canvas.toBlob(blob => {
-            if (blob) resolve(blob);
-            else reject(new Error("Unable to encode image."));
-        }, type, quality);
-    });
-}
-
-function getImageFormat(file) {
-    if (file.type === "image/jpeg" || file.type === "image/jpg") {
-        return "JPEG";
-    }
-
-    if (file.type === "image/png") {
-        return "PNG";
-    }
-
-    return null;
-}
-
-/* =====================================
-   JPG TO PDF
-   - Standard A4 pages
-   - Proportional image fitting
-   - No cropping or stretching
-   - Multiple images supported
-===================================== */
-
+/* JPG TO PDF
+   The image itself is embedded; no OCR or text reconstruction.
+   A4 is used as the output page size and the image is fitted
+   proportionally. The image content is not cropped or stretched.
+*/
 async function convertJPGPDF() {
     const files = Array.from(jpgPdfInput.files);
     const button = $("jpgPdfButton");
@@ -847,50 +429,22 @@ async function convertJPGPDF() {
         return;
     }
 
-    if (files.some(file => !file.type.startsWith("image/"))) {
-        setStatus(jpgPdfResult, "Please select valid image files only.", "status-error");
-        return;
-    }
-
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        setStatus(jpgPdfResult, "PDF library failed to load. Check your internet connection.", "status-error");
-        return;
-    }
-
     button.disabled = true;
-    setStatus(jpgPdfResult, "Preparing images...");
 
     try {
         const { jsPDF } = window.jspdf;
-
-        // A4 in millimetres.
-        const A4_WIDTH = 210;
-        const A4_HEIGHT = 297;
-        const MARGIN = 8;
-
         let pdf = null;
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
+            setStatus(jpgPdfResult, `Processing ${i + 1} of ${files.length}: ${file.name}`);
+            setProgress("jpgPdfProgressTrack", "jpgPdfProgressBar", (i + 1) / files.length * 90);
 
-            setStatus(
-                jpgPdfResult,
-                `Processing image ${i + 1} of ${files.length}: ${file.name}`
-            );
-
-            setProgress(
-                "jpgPdfProgressTrack",
-                "jpgPdfProgressBar",
-                ((i + 1) / files.length) * 90
-            );
-
-            const image = await loadImage(file);
-
-            // Choose page orientation to suit the image.
-            const landscape = image.naturalWidth > image.naturalHeight;
-
-            const pageWidth = landscape ? A4_HEIGHT : A4_WIDTH;
-            const pageHeight = landscape ? A4_WIDTH : A4_HEIGHT;
+            const img = await loadImage(file);
+            const landscape = img.naturalWidth > img.naturalHeight;
+            const pageW = landscape ? 297 : 210;
+            const pageH = landscape ? 210 : 297;
+            const margin = 8;
 
             if (!pdf) {
                 pdf = new jsPDF({
@@ -900,92 +454,57 @@ async function convertJPGPDF() {
                     compress: true
                 });
             } else {
-                pdf.addPage(
-                    "a4",
-                    landscape ? "landscape" : "portrait"
-                );
+                pdf.addPage("a4", landscape ? "landscape" : "portrait");
             }
 
-            /*
-             * Scale image to fit inside the page.
-             * The original aspect ratio is preserved.
-             * The remaining area is white.
-             */
-            const availableWidth = pageWidth - (MARGIN * 2);
-            const availableHeight = pageHeight - (MARGIN * 2);
-
             const scale = Math.min(
-                availableWidth / image.naturalWidth,
-                availableHeight / image.naturalHeight
+                (pageW - 2 * margin) / img.naturalWidth,
+                (pageH - 2 * margin) / img.naturalHeight
             );
 
-            const renderWidth = image.naturalWidth * scale;
-            const renderHeight = image.naturalHeight * scale;
+            const w = img.naturalWidth * scale;
+            const h = img.naturalHeight * scale;
+            const x = (pageW - w) / 2;
+            const y = (pageH - h) / 2;
 
-            const x = (pageWidth - renderWidth) / 2;
-            const y = (pageHeight - renderHeight) / 2;
+            let data;
+            let format;
 
-            let imageData;
-            let format = getImageFormat(file);
-
-            /*
-             * Use the original encoded data for JPEG and PNG.
-             * Convert other image types to PNG so their encoding
-             * is not incorrectly labelled in the PDF.
-             */
-            if (format) {
-                imageData = await readAsDataURL(file);
+            if (file.type === "image/jpeg" || file.type === "image/jpg") {
+                data = await readAsDataURL(file);
+                format = "JPEG";
+            } else if (file.type === "image/png") {
+                data = await readAsDataURL(file);
+                format = "PNG";
             } else {
                 const canvas = document.createElement("canvas");
-                canvas.width = image.naturalWidth;
-                canvas.height = image.naturalHeight;
-
-                const context = canvas.getContext("2d");
-                context.fillStyle = "#FFFFFF";
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                context.drawImage(image, 0, 0);
-
-                imageData = canvas.toDataURL("image/png");
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                data = canvas.toDataURL("image/png");
                 format = "PNG";
             }
 
             pdf.setFillColor(255, 255, 255);
-            pdf.rect(0, 0, pageWidth, pageHeight, "F");
-
-            pdf.addImage(
-                imageData,
-                format,
-                x,
-                y,
-                renderWidth,
-                renderHeight,
-                undefined,
-                "FAST"
-            );
+            pdf.rect(0, 0, pageW, pageH, "F");
+            pdf.addImage(data, format, x, y, w, h, undefined, "NONE");
         }
 
         setProgress("jpgPdfProgressTrack", "jpgPdfProgressBar", 100);
-
-        const outputName = files.length === 1
+        const name = files.length === 1
             ? safeFilename(files[0].name) + ".pdf"
             : "converted_images.pdf";
 
-        pdf.save(outputName);
-
-        setStatus(
-            jpgPdfResult,
-            `Success! ${files.length} image(s) converted into ${outputName}. Each image occupies one A4 page, fitted without cropping or stretching.`,
-            "status-success"
-        );
-
-    } catch (error) {
-        console.error(error);
-
-        setStatus(
-            jpgPdfResult,
-            "Conversion failed. Please try another image or check your internet connection.",
-            "status-error"
-        );
+        pdf.save(name);
+        setStatus(jpgPdfResult,
+            `Success! ${files.length} image(s) converted. The image content has not been OCR-rewritten.`,
+            "status-success");
+    } catch (e) {
+        console.error(e);
+        setStatus(jpgPdfResult, "Conversion failed. Please check the image files.", "status-error");
     } finally {
         button.disabled = false;
     }
@@ -994,21 +513,17 @@ async function convertJPGPDF() {
 function readAsDataURL(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
         reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Unable to read the file."));
-
+        reader.onerror = () => reject(new Error("Unable to read file."));
         reader.readAsDataURL(file);
     });
 }
 
-/* =====================================
-   PDF TO JPG
-   - Converts every page
-   - Creates separate JPG images
-   - Downloads all images as ZIP
-===================================== */
-
+/* PDF TO JPG
+   Render each original PDF page directly with PDF.js.
+   Do not extract, rewrite or redraw the text as text.
+   CMaps and standard fonts are explicitly enabled.
+*/
 async function convertPDFJPG() {
     const file = pdfInput.files[0];
     const button = $("pdfJpgButton");
@@ -1018,67 +533,41 @@ async function convertPDFJPG() {
         return;
     }
 
-    if (!window.pdfjsLib || !window.JSZip) {
-        setStatus(
-            pdfJpgResult,
-            "Required libraries failed to load. Check your internet connection.",
-            "status-error"
-        );
-        return;
-    }
-
     button.disabled = true;
-    setStatus(pdfJpgResult, "Opening PDF...");
+    let pdf = null;
 
     try {
-        const arrayBuffer = await file.arrayBuffer();
+        const data = new Uint8Array(await file.arrayBuffer());
 
-        const loadingTask = pdfjsLib.getDocument({
-            data: new Uint8Array(arrayBuffer)
-        });
+        pdf = await pdfjsLib.getDocument({
+            ...PDFJS_OPTIONS,
+            data
+        }).promise;
 
-        const pdf = await loadingTask.promise;
         const zip = new JSZip();
-
         const baseName = safeFilename(file.name);
-        const totalPages = pdf.numPages;
+        const total = pdf.numPages;
 
-        for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-            setStatus(
-                pdfJpgResult,
-                `Converting page ${pageNumber} of ${totalPages}...`
-            );
+        for (let n = 1; n <= total; n++) {
+            setStatus(pdfJpgResult, `Rendering original PDF page ${n} of ${total}...`);
+            setProgress("pdfJpgProgressTrack", "pdfJpgProgressBar", n / total * 90);
 
-            setProgress(
-                "pdfJpgProgressTrack",
-                "pdfJpgProgressBar",
-                (pageNumber / totalPages) * 90
-            );
-
-            const page = await pdf.getPage(pageNumber);
+            const page = await pdf.getPage(n);
 
             /*
-             * Render at 2x resolution for a good balance
-             * between clarity, processing time and memory.
-             * Use a lower scale for extremely large pages.
+             * Render at up to 2x for clarity.
+             * Page rotation and page dimensions are taken from the PDF itself.
              */
-            const baseViewport = page.getViewport({ scale: 1 });
-
-            const MAX_DIMENSION = 6000;
+            const originalViewport = page.getViewport({ scale: 1 });
+            const maxDimension = 6000;
             const scale = Math.min(
                 2,
-                MAX_DIMENSION / Math.max(
-                    baseViewport.width,
-                    baseViewport.height
-                )
+                maxDimension / Math.max(originalViewport.width, originalViewport.height)
             );
-
             const viewport = page.getViewport({ scale });
 
             const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d", {
-                alpha: false
-            });
+            const context = canvas.getContext("2d", { alpha: false });
 
             canvas.width = Math.ceil(viewport.width);
             canvas.height = Math.ceil(viewport.height);
@@ -1086,59 +575,56 @@ async function convertPDFJPG() {
             context.fillStyle = "#FFFFFF";
             context.fillRect(0, 0, canvas.width, canvas.height);
 
+            /*
+             * Important: PDF.js paints the actual PDF page onto the canvas.
+             * CMaps and font files are loaded from the configured CDN paths.
+             * No OCR and no text extraction/reconstruction are performed.
+             */
             await page.render({
                 canvasContext: context,
-                viewport: viewport,
-                background: "#FFFFFF"
+                viewport,
+                background: "#FFFFFF",
+                intent: "display"
             }).promise;
 
-            const blob = await canvasToBlob(canvas, "image/jpeg", 0.92);
-
+            const blob = await canvasToBlob(canvas, "image/jpeg", 0.95);
             const pageName =
-                `${baseName}_page_${String(pageNumber).padStart(3, "0")}.jpg`;
+                `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
 
             zip.file(pageName, blob);
 
-            // Release memory from each page before continuing.
             canvas.width = 0;
             canvas.height = 0;
-
             page.cleanup();
         }
 
-        setStatus(pdfJpgResult, "Creating ZIP file...");
+        setStatus(pdfJpgResult, "Packaging JPG images into ZIP...");
 
         const zipBlob = await zip.generateAsync({
             type: "blob",
             compression: "DEFLATE",
             compressionOptions: { level: 3 }
-        }, metadata => {
-            setProgress(
-                "pdfJpgProgressTrack",
-                "pdfJpgProgressBar",
-                90 + metadata.percent * 0.1
-            );
+        }, meta => {
+            setProgress("pdfJpgProgressTrack", "pdfJpgProgressBar",
+                90 + meta.percent * 0.1);
         });
 
         downloadBlob(zipBlob, `${baseName}_JPG.zip`);
 
-        setStatus(
-            pdfJpgResult,
-            `Success! All ${totalPages} PDF page(s) have been converted into JPG images and packaged into ${baseName}_JPG.zip. Extract the ZIP file to access each image.`,
-            "status-success"
-        );
+        setStatus(pdfJpgResult,
+            `Success! All ${total} pages converted into JPG images. Extract ${baseName}_JPG.zip to access the images.`,
+            "status-success");
 
-        await pdf.destroy();
+    } catch (e) {
+        console.error("PDF-to-JPG error:", e);
 
-    } catch (error) {
-        console.error(error);
-
-        setStatus(
-            pdfJpgResult,
-            "Unable to convert this PDF. It may be damaged, password-protected, or too large to process. Please try another file.",
-            "status-error"
-        );
+        setStatus(pdfJpgResult,
+            "Conversion failed. Check the PDF file and internet connection. If characters remain incorrect, the source PDF's font encoding or embedded fonts may require further inspection.",
+            "status-error");
     } finally {
+        if (pdf) {
+            try { await pdf.destroy(); } catch (_) {}
+        }
         button.disabled = false;
     }
 }
