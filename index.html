@@ -4,11 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>PIPP-Calc</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
@@ -30,14 +28,13 @@ body {
 }
 
 .card {
-    background: #ffffff;
+    background: #fff;
     border-radius: 22px;
     padding: 45px 55px;
     width: 450px;
     max-width: 100%;
     text-align: center;
     box-shadow: 0 15px 45px rgba(0,0,0,.12);
-    border: none;
 }
 
 h2 {
@@ -141,10 +138,7 @@ button:hover {
     box-shadow: 0 12px 25px rgba(36,156,245,.35);
 }
 
-#result,
-#sklResult,
-#jpgPdfResult,
-#pdfJpgResult {
+#result, #sklResult, #jpgPdfResult, #pdfJpgResult {
     margin-top: 15px;
     color: #555;
     overflow-wrap: anywhere;
@@ -161,110 +155,65 @@ button:hover {
 <div class="card">
 
     <h2 id="title">PIPP-Calc</h2>
-
-    <div class="subtitle" id="subtitle">
-        Automatic BPJS Date Calculator
-    </div>
+    <div class="subtitle" id="subtitle">Automatic BPJS Date Calculator</div>
 
     <div id="menu">
-        <div class="main-option" onclick="openAdmin()">
-            PIPP Administration
-        </div>
-
-        <div class="main-option" onclick="openConverter()">
-            Converter
-        </div>
+        <div class="main-option" onclick="openAdmin()">PIPP Administration</div>
+        <div class="main-option" onclick="openConverter()">Converter</div>
     </div>
 
     <div id="admin" class="hidden">
-
         <p class="desc" id="desc">
             Silahkan masukkan tanggal Surat Rujukan dikeluarkan:
         </p>
 
         <div class="options">
-
-            <div class="opt-btn active"
-                 onclick="setMode(90,'days',this,1)">
+            <div class="opt-btn active" onclick="setMode(90,'days',this,1)">
                 Masa Aktif Surat Rujukan
             </div>
-
-            <div class="opt-btn"
-                 onclick="setMode(23,'days',this,2)">
+            <div class="opt-btn" onclick="setMode(23,'days',this,2)">
                 Batas Klaim Kacamata ke Optik
             </div>
-
-            <div class="opt-btn"
-                 onclick="setMode(2,'years',this,3)">
+            <div class="opt-btn" onclick="setMode(2,'years',this,3)">
                 Klaim 1x 2 Th
             </div>
-
         </div>
 
         <input type="date" id="startDate">
-
-        <button onclick="calculateDate()">
-            Calculate Date
-        </button>
-
+        <button onclick="calculateDate()">Calculate Date</button>
         <div id="result"></div>
-
         <br>
-
         <button onclick="backMenu()">Back</button>
     </div>
 
     <div id="converter" class="hidden">
 
-        <div class="main-option" onclick="openSKL()">
-            Converter SKL BBL
-        </div>
-
-        <div class="main-option" onclick="openJPGPDF()">
-            Converter JPG to PDF
-        </div>
-
-        <div class="main-option" onclick="openPDFJPG()">
-            Converter PDF to JPG
-        </div>
+        <div class="main-option" onclick="openSKL()">Converter SKL BBL</div>
+        <div class="main-option" onclick="openJPGPDF()">Converter JPG to PDF</div>
+        <div class="main-option" onclick="openPDFJPG()">Converter PDF to JPG</div>
 
         <div id="sklBox" class="hidden">
-
-            <p class="desc">
-                Convert image → JPG under 100 KB
-            </p>
-
+            <p class="desc">Convert image → JPG under 100 KB</p>
             <input type="file" id="sklInput" accept="image/*">
-
             <button onclick="convertSKL()">Convert JPG</button>
-
             <div id="sklResult"></div>
         </div>
 
         <div id="jpgpdfBox" class="hidden">
-
             <p class="desc">Convert image into PDF</p>
-
             <input type="file" id="jpgPdfInput" accept="image/*">
-
             <button onclick="convertJPGPDF()">Convert PDF</button>
-
             <div id="jpgPdfResult"></div>
         </div>
 
         <div id="pdfjpgBox" class="hidden">
-
             <p class="desc">Convert PDF into JPG</p>
-
             <input type="file" id="pdfInput" accept="application/pdf">
-
             <button onclick="convertPDFJPG()">Convert JPG</button>
-
             <div id="pdfJpgResult"></div>
         </div>
 
         <br>
-
         <button onclick="backMenu()">Back</button>
     </div>
 
@@ -297,7 +246,6 @@ function openAdmin() {
     menu.classList.add("hidden");
     converter.classList.add("hidden");
     admin.classList.remove("hidden");
-
     title.innerText = "PIPP-Calc";
     subtitle.innerText = "Automatic BPJS Date Calculator";
 }
@@ -306,7 +254,6 @@ function openConverter() {
     menu.classList.add("hidden");
     admin.classList.add("hidden");
     converter.classList.remove("hidden");
-
     title.innerText = "PIPP-Converter";
     subtitle.innerText = "Image Format Converter";
 }
@@ -315,7 +262,6 @@ function backMenu() {
     menu.classList.remove("hidden");
     admin.classList.add("hidden");
     converter.classList.add("hidden");
-
     title.innerText = "PIPP-Calc";
     subtitle.innerText = "Automatic BPJS Date Calculator";
 }
@@ -330,42 +276,34 @@ function setMode(v, t, e, i) {
 
     e.classList.add("active");
 
-    if (i == 1) {
-        desc.innerText =
-            "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
-    }
-
-    if (i == 2) {
-        desc.innerText =
-            "Silahkan masukkan tanggal Klaim Kacamata terakhir:";
-    }
-
-    if (i == 3) {
-        desc.innerText =
-            "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
-    }
+    if (i === 1) desc.innerText =
+        "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:";
+    if (i === 2) desc.innerText =
+        "Silahkan masukkan tanggal Klaim Kacamata terakhir:";
+    if (i === 3) desc.innerText =
+        "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
 }
 
 function calculateDate() {
-    let input = document.getElementById("startDate").value;
+    const input = document.getElementById("startDate").value;
+    const result = document.getElementById("result");
 
     if (!input) {
-        document.getElementById("result").innerText = "Choose date";
+        result.innerText = "Choose date";
         return;
     }
 
-    let d = new Date(input + "T00:00:00");
+    const d = new Date(input + "T00:00:00");
 
-    if (modeType == "days") {
+    if (modeType === "days") {
         d.setDate(d.getDate() + modeValue);
     } else {
         d.setFullYear(d.getFullYear() + modeValue);
     }
 
-    document.getElementById("result").innerHTML =
-        `Result: <span class="highlight">${
-            d.toLocaleDateString("en-GB")
-        }</span>`;
+    result.innerHTML = `Result: <span class="highlight">${
+        d.toLocaleDateString("en-GB")
+    }</span>`;
 }
 
 function hideBoxes() {
@@ -392,118 +330,144 @@ function openPDFJPG() {
     pdfJpgResult.innerText = "";
 }
 
-/* ==========================================
-   CONVERTER SKL BBL
-   Target size: maximum 100 KB
-   ========================================== */
+/* =========================================
+   SKL BBL: STRICTLY BELOW 100 KB
+   The file is NOT downloaded until its size
+   is verified to be less than 100 KB.
+   ========================================= */
 
 function convertSKL() {
     const file = sklInput.files[0];
+    const MAX_BYTES = 100 * 1024; // Strict limit: 102,400 bytes
+    const result = sklResult;
 
     if (!file) {
-        sklResult.innerText = "Please choose an image first.";
+        result.innerText = "Please choose an image first.";
         return;
     }
 
-    sklResult.innerText = "Compressing image...";
+    result.innerText = "Compressing image to under 100 KB...";
 
     const img = new Image();
     const reader = new FileReader();
 
     reader.onerror = function() {
-        sklResult.innerText = "Unable to read the selected file.";
+        result.innerText = "Unable to read the selected image.";
+    };
+
+    img.onerror = function() {
+        result.innerText = "Unable to open this image. Please try another file.";
     };
 
     reader.onload = function(e) {
         img.src = e.target.result;
     };
 
-    img.onerror = function() {
-        sklResult.innerText = "Unable to open this image. Please try another file.";
-    };
-
-    img.onload = function() {
+    img.onload = async function() {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const maxSize = 100 * 1024; // 100 KB
-        const minDimension = 100;
         let width = img.naturalWidth;
         let height = img.naturalHeight;
-        let quality = 0.90;
+        let quality = 0.85;
         let attempts = 0;
-        const maxAttempts = 100;
+        const MAX_ATTEMPTS = 250;
 
-        function drawImage() {
-            canvas.width = width;
-            canvas.height = height;
+        function encodeJPEG(q) {
+            return new Promise(resolve => {
+                canvas.toBlob(resolve, "image/jpeg", q);
+            });
+        }
 
-            ctx.clearRect(0, 0, width, height);
-            ctx.drawImage(img, 0, 0, width, height);
+        function download(blob) {
+            // Final safety check: never download a file at or above 100 KB.
+            if (!blob || blob.size >= MAX_BYTES) {
+                result.innerText =
+                    "File is still 100 KB or larger. Compression will continue.";
+                return false;
+            }
 
-            canvas.toBlob(function(blob) {
-                if (!blob) {
-                    sklResult.innerText = "Compression failed. Please try another image.";
-                    return;
-                }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
 
-                if (blob.size <= maxSize) {
-                    downloadResult(blob);
-                    return;
-                }
+            link.href = url;
+            link.download = "SKL_BBL.jpg";
 
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            result.innerText =
+                "Done ✔ JPG under 100 KB (" +
+                (blob.size / 1024).toFixed(2) + " KB)";
+
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            return true;
+        }
+
+        try {
+            while (attempts < MAX_ATTEMPTS) {
                 attempts++;
 
-                if (attempts >= maxAttempts ||
-                    (width <= minDimension && height <= minDimension)) {
-                    sklResult.innerText =
-                        "Unable to reduce this image to under 100 KB. Please try another image.";
-                    return;
+                canvas.width = width;
+                canvas.height = height;
+
+                ctx.clearRect(0, 0, width, height);
+
+                // White background prevents transparency becoming black.
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const blob = await encodeJPEG(quality);
+
+                if (!blob) {
+                    throw new Error("JPEG encoding failed");
                 }
 
-                if (quality > 0.30) {
-                    quality = Math.max(0.30, quality - 0.10);
-                } else {
-                    // Reduce image dimensions while preserving proportions.
-                    width = Math.max(minDimension, Math.round(width * 0.85));
-                    height = Math.max(minDimension, Math.round(height * 0.85));
-                    quality = 0.80;
+                // Strictly less than 100 KB is required.
+                if (blob.size < MAX_BYTES) {
+                    if (download(blob)) return;
                 }
 
-                drawImage();
+                // First reduce JPEG quality.
+                if (quality > 0.10) {
+                    quality = Math.max(0.10, quality - 0.10);
+                    continue;
+                }
 
-            }, "image/jpeg", quality);
+                // If quality is already minimal, reduce resolution.
+                // Dimensions keep shrinking until the file fits.
+                if (width > 1 || height > 1) {
+                    const scale = 0.75;
+
+                    width = Math.max(1, Math.floor(width * scale));
+                    height = Math.max(1, Math.floor(height * scale));
+
+                    // Retry each new resolution from higher quality.
+                    quality = 0.85;
+                    continue;
+                }
+
+                // Even the smallest possible canvas should be tiny.
+                // If encoding still fails the limit, do not download it.
+                throw new Error("Could not meet the 100 KB size limit");
+            }
+
+            throw new Error("Compression attempt limit reached");
+
+        } catch (error) {
+            result.innerText =
+                "Could not create a JPG under 100 KB. Please try another image.";
         }
-
-        function downloadResult(blob) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-
-            a.href = url;
-            a.download = "SKL_BBL.jpg";
-
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-
-            sklResult.innerText =
-                "Done ✔ JPG under 100 KB (" +
-                (blob.size / 1024).toFixed(1) + " KB)";
-
-            setTimeout(function() {
-                URL.revokeObjectURL(url);
-            }, 1000);
-        }
-
-        drawImage();
     };
 
     reader.readAsDataURL(file);
 }
 
-/* ==========================================
-   CONVERTER JPG TO PDF
-   ========================================== */
+/* =========================================
+   JPG TO PDF
+   ========================================= */
 
 function convertJPGPDF() {
     const file = jpgPdfInput.files[0];
@@ -513,12 +477,20 @@ function convertJPGPDF() {
         return;
     }
 
+    jpgPdfResult.innerText = "Creating PDF...";
+
     const reader = new FileReader();
 
-    jpgPdfResult.innerText = "Creating PDF...";
+    reader.onerror = function() {
+        jpgPdfResult.innerText = "Unable to read the selected image.";
+    };
 
     reader.onload = function(e) {
         const img = new Image();
+
+        img.onerror = function() {
+            jpgPdfResult.innerText = "Unable to open this image.";
+        };
 
         img.onload = function() {
             try {
@@ -539,14 +511,12 @@ function convertJPGPDF() {
 
                 const width = img.width * ratio;
                 const height = img.height * ratio;
-                const x = (pageWidth - width) / 2;
-                const y = (pageHeight - height) / 2;
 
                 pdf.addImage(
                     e.target.result,
                     "JPEG",
-                    x,
-                    y,
+                    (pageWidth - width) / 2,
+                    (pageHeight - height) / 2,
                     width,
                     height
                 );
@@ -558,24 +528,15 @@ function convertJPGPDF() {
             }
         };
 
-        img.onerror = function() {
-            jpgPdfResult.innerText = "Unable to open this image.";
-        };
-
         img.src = e.target.result;
-    };
-
-    reader.onerror = function() {
-        jpgPdfResult.innerText = "Unable to read the selected file.";
     };
 
     reader.readAsDataURL(file);
 }
 
-/* ==========================================
-   CONVERTER PDF TO JPG
-   Exports the first page of the PDF
-   ========================================== */
+/* =========================================
+   PDF TO JPG: FIRST PAGE
+   ========================================= */
 
 function convertPDFJPG() {
     const file = pdfInput.files[0];
@@ -595,9 +556,8 @@ function convertPDFJPG() {
 
     reader.onload = async function() {
         try {
-            const pdfData = new Uint8Array(reader.result);
             const pdf = await pdfjsLib.getDocument({
-                data: pdfData
+                data: new Uint8Array(reader.result)
             }).promise;
 
             const page = await pdf.getPage(1);
@@ -621,20 +581,18 @@ function convertPDFJPG() {
                 }
 
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
+                const link = document.createElement("a");
 
-                a.href = url;
-                a.download = "converted.jpg";
+                link.href = url;
+                link.download = "converted.jpg";
 
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
 
                 pdfJpgResult.innerText = "Done ✔ JPG created (page 1)";
 
-                setTimeout(function() {
-                    URL.revokeObjectURL(url);
-                }, 1000);
+                setTimeout(() => URL.revokeObjectURL(url), 1500);
             }, "image/jpeg", 0.92);
 
         } catch (error) {
