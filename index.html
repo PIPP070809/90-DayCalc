@@ -94,7 +94,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
     </div>
 
     <div id="jpgpdfBox" class="hidden converter-panel">
-        <p class="desc">Convert images into PDF. Images are fitted proportionally without cropping or stretching.</p>
+        <p class="desc">Convert images into PDF without stretching or cropping the images.</p>
         <label class="upload-area">
             <div class="upload-icon">🖼️</div>
             <div class="upload-title">Select image files</div>
@@ -109,11 +109,11 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
     </div>
 
     <div id="pdfjpgBox" class="hidden converter-panel">
-        <p class="desc">Convert every PDF page into a separate JPG file. No ZIP file is created.</p>
+        <p class="desc">Convert PDF pages into separate JPG files while preserving their visual appearance. No ZIP file.</p>
         <label class="upload-area">
             <div class="upload-icon">📑</div>
             <div class="upload-title">Select a PDF file</div>
-            <div class="upload-subtitle">Each page will be downloaded as an individual JPG.</div>
+            <div class="upload-subtitle">Every page is downloaded as an individual JPG.</div>
             <input type="file" id="pdfInput" accept="application/pdf,.pdf">
         </label>
         <div id="pdfFileInfo" class="file-info hidden"></div>
@@ -128,7 +128,6 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 </div>
 
 <script>
-/* PDF.JS CONFIGURATION */
 const PDFJS_VERSION = "3.11.174";
 const PDFJS_BASE = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
 
@@ -146,7 +145,6 @@ let modeValue = 90;
 let modeType = "days";
 
 const $ = id => document.getElementById(id);
-
 const menu = $("menu");
 const admin = $("admin");
 const converter = $("converter");
@@ -270,6 +268,7 @@ function openPDFJPG() {
 function setMode(v, t, el, i) {
     modeValue = v;
     modeType = t;
+
     document.querySelectorAll(".opt-btn").forEach(x => x.classList.remove("active"));
     el.classList.add("active");
 
@@ -282,6 +281,7 @@ function setMode(v, t, el, i) {
 
 function calculateDate() {
     const value = $("startDate").value;
+
     if (!value) {
         $("result").textContent = "Choose date first.";
         return;
@@ -335,23 +335,30 @@ function loadImage(file) {
     return new Promise((resolve, reject) => {
         const url = URL.createObjectURL(file);
         const img = new Image();
+
         img.onload = () => {
             URL.revokeObjectURL(url);
             resolve(img);
         };
+
         img.onerror = () => {
             URL.revokeObjectURL(url);
             reject(new Error("Unable to open this image."));
         };
+
         img.src = url;
     });
 }
 
 function canvasToBlob(canvas, type, quality) {
     return new Promise((resolve, reject) => {
-        canvas.toBlob(blob => blob
-            ? resolve(blob)
-            : reject(new Error("Unable to encode image.")), type, quality);
+        canvas.toBlob(
+            blob => blob
+                ? resolve(blob)
+                : reject(new Error("Unable to encode image.")),
+            type,
+            quality
+        );
     });
 }
 
@@ -381,6 +388,7 @@ async function convertSKL() {
         const img = await loadImage(file);
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
+
         let w = img.naturalWidth;
         let h = img.naturalHeight;
         let quality = 0.85;
@@ -388,6 +396,7 @@ async function convertSKL() {
         for (let i = 0; i < 400; i++) {
             canvas.width = w;
             canvas.height = h;
+
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, w, h);
             ctx.drawImage(img, 0, 0, w, h);
@@ -396,9 +405,11 @@ async function convertSKL() {
 
             if (blob.size < MAX_BYTES) {
                 downloadBlob(blob, "SKL_BBL.jpg");
-                setStatus(sklResult,
+                setStatus(
+                    sklResult,
                     `Success! JPG size: ${formatBytes(blob.size)}. Under 100 KB.`,
-                    "status-success");
+                    "status-success"
+                );
                 return;
             }
 
@@ -486,10 +497,12 @@ async function convertJPGPDF() {
                 const canvas = document.createElement("canvas");
                 canvas.width = img.naturalWidth;
                 canvas.height = img.naturalHeight;
+
                 const ctx = canvas.getContext("2d");
                 ctx.fillStyle = "#fff";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0);
+
                 data = canvas.toDataURL("image/png");
                 format = "PNG";
             }
@@ -506,18 +519,33 @@ async function convertJPGPDF() {
             : "converted_images.pdf";
 
         pdf.save(name);
-        setStatus(jpgPdfResult,
+
+        setStatus(
+            jpgPdfResult,
             `Success! ${files.length} image(s) converted to PDF.`,
-            "status-success");
+            "status-success"
+        );
     } catch (e) {
         console.error(e);
-        setStatus(jpgPdfResult, e.message || "Conversion failed. Please check the image files.", "status-error");
+        setStatus(
+            jpgPdfResult,
+            e.message || "Conversion failed. Please check the image files.",
+            "status-error"
+        );
     } finally {
         button.disabled = false;
     }
 }
 
-/* PDF TO JPG: DOWNLOAD EACH PAGE SEPARATELY, NO ZIP */
+/*
+ * PDF TO JPG
+ *
+ * Render the PDF page itself as a bitmap.
+ * No text extraction, text rewriting, font substitution by this
+ * application, or reconstruction of the page content is performed.
+ *
+ * Output: one separate JPG per page; no ZIP.
+ */
 async function convertPDFJPG() {
     const file = pdfInput.files[0];
     const button = $("pdfJpgButton");
@@ -531,6 +559,8 @@ async function convertPDFJPG() {
     let pdf = null;
 
     try {
+        setStatus(pdfJpgResult, "Reading original PDF...");
+
         const data = new Uint8Array(await file.arrayBuffer());
 
         pdf = await pdfjsLib.getDocument({
@@ -539,28 +569,26 @@ async function convertPDFJPG() {
         }).promise;
 
         const baseName = safeFilename(file.name);
-        const total = pdf.numPages;
+        const totalPages = pdf.numPages;
 
-        setStatus(pdfJpgResult, `Converting ${total} PDF page(s) into separate JPG files...`);
-
-        for (let n = 1; n <= total; n++) {
-            setStatus(pdfJpgResult, `Converting page ${n} of ${total}...`);
-            setProgress("pdfJpgProgressTrack", "pdfJpgProgressBar", n / total * 100);
-
-            const page = await pdf.getPage(n);
-            const originalViewport = page.getViewport({ scale: 1 });
-
-            const scale = Math.min(
-                2,
-                6000 / Math.max(
-                    originalViewport.width,
-                    originalViewport.height
-                )
+        for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+            setStatus(
+                pdfJpgResult,
+                `Converting page ${pageNumber} of ${totalPages}...`
             );
 
-            const viewport = page.getViewport({ scale });
+            const page = await pdf.getPage(pageNumber);
+
+            /*
+             * Higher rendering scale improves text clarity.
+             * The PDF's page dimensions and orientation are retained.
+             */
+            const viewport = page.getViewport({ scale: 3 });
+
             const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d", { alpha: false });
+            const context = canvas.getContext("2d", {
+                alpha: false
+            });
 
             canvas.width = Math.ceil(viewport.width);
             canvas.height = Math.ceil(viewport.height);
@@ -575,34 +603,54 @@ async function convertPDFJPG() {
                 intent: "display"
             }).promise;
 
-            const blob = await canvasToBlob(canvas, "image/jpeg", 0.95);
+            const blob = await canvasToBlob(
+                canvas,
+                "image/jpeg",
+                1.0
+            );
 
             const filename =
-                `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
+                `${baseName}_page_${String(pageNumber).padStart(3, "0")}.jpg`;
 
             downloadBlob(blob, filename);
 
             canvas.width = 0;
             canvas.height = 0;
+
             page.cleanup();
 
-            // Give the browser time to initiate each separate download.
-            await new Promise(resolve => setTimeout(resolve, 500));
+            setProgress(
+                "pdfJpgProgressTrack",
+                "pdfJpgProgressBar",
+                (pageNumber / totalPages) * 100
+            );
+
+            // Initiate individual downloads rather than creating a ZIP.
+            await new Promise(resolve => setTimeout(resolve, 700));
         }
 
-        setStatus(pdfJpgResult,
-            `Success! All ${total} pages have been converted into separate JPG files. No ZIP file was created.`,
-            "status-success");
+        setStatus(
+            pdfJpgResult,
+            `Success! All ${totalPages} pages have been converted to separate JPG files. No ZIP was created.`,
+            "status-success"
+        );
 
-    } catch (e) {
-        console.error("PDF to JPG error:", e);
-        setStatus(pdfJpgResult,
-            "Conversion failed. Check the PDF file and internet connection. If characters remain incorrect, the source PDF's font encoding may require further inspection.",
-            "status-error");
+    } catch (error) {
+        console.error("PDF to JPG conversion error:", error);
+
+        setStatus(
+            pdfJpgResult,
+            "Conversion failed. Please check the PDF file and try again.",
+            "status-error"
+        );
+
     } finally {
         if (pdf) {
-            try { await pdf.destroy(); } catch (_) {}
+            try {
+                await pdf.destroy();
+            } catch (error) {}
         }
+
         button.disabled = false;
     }
 }
