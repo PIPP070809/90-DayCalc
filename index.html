@@ -66,7 +66,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .input-group { text-align: left; }
 .table-container { margin-top: 20px; border-radius: 8px; border: 1px solid #dfe5ef; background: #fff;}
 .pasien-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; table-layout: fixed; }
-.pasien-table th, .pasien-table td { padding: 11px 8px; border: 1px solid #dfe5ef; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; font-weight: bold; } /* Semua isi baris tabel jadi bold */
+.pasien-table th, .pasien-table td { padding: 11px 8px; border: 1px solid #dfe5ef; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; font-weight: bold; }
 .pasien-table th { background: #41b8bc; color: white; font-weight: 600; font-size: 13px; }
 .pasien-table td { color: #333; font-size: 13px; }
 .btn-delete { background: #e5484d; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; width: auto; font-size: 12px; box-shadow: none; margin-top: 0; font-weight: normal;}
@@ -104,7 +104,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 
 <!-- PASIEN SISIP MENU -->
 <div id="pasienSisip" class="hidden">
-    <p class="desc">Isi form di bawah untuk merekap pasien sisip. Data dapat diekspor langsung ke file Excel (.xls).</p>
+    <p class="desc">Isi form di bawah untuk merekap pasien sisip. Data tersimpan otomatis di browser hingga Anda hapus manual.</p>
     
     <div class="form-grid">
         <div class="input-group">
@@ -360,8 +360,8 @@ function backMenu() {
     subtitle.textContent = "Automatic BPJS Date Calculator";
 }
 
-/* AUTH & PASIEN SISIP PIPP LOGIC */
-let pasienData = [];
+/* AUTH & PASIEN SISIP PIPP LOGIC (WITH LOCALSTORAGE) */
+let pasienData = JSON.parse(localStorage.getItem("pipp_pasien_data")) || [];
 
 function openPasienSisipPrompt() {
     let inputPwd = prompt("Masukkan Password untuk akses Pasien Sisip:");
@@ -411,6 +411,8 @@ function addPasienSisip() {
         jam: pJam
     });
 
+    localStorage.setItem("pipp_pasien_data", JSON.stringify(pasienData));
+
     $("psDokterTujuan").value = "";
     $("psNama").value = "";
     $("psSumber").value = "";
@@ -423,6 +425,7 @@ function addPasienSisip() {
 
 function removePasien(index) {
     pasienData.splice(index, 1);
+    localStorage.setItem("pipp_pasien_data", JSON.stringify(pasienData));
     renderPasienTable();
 }
 
