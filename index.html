@@ -14,7 +14,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Playfair Display',serif}
 body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:#f5f7fb}
 .card{background:#fff;border-radius:22px;padding:40px;width:560px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12); transition: width 0.3s ease;}
-.card.landscape-mode {width: 1250px;} /* Diperlebar agar tidak perlu scroll ke samping */
+.card.landscape-mode {width: 1250px;}
 h2{font-size:36px;color:#333;margin-bottom:8px}
 .subtitle{font-size:14px;color:#999;margin-bottom:28px}
 .main-option{padding:16px;margin:12px 0;border-radius:15px;background:#f2f5fb;color:#555;cursor:pointer;transition:.25s;border:1px solid #e8edf5}
@@ -259,8 +259,7 @@ const PDFJS_OPTIONS = {
 
 let modeValue = 90;
 let modeType = "days";
-let currentPasienPassword = localStorage.getItem("pipp_pasien_pwd") || "290898";
-let generatedOTP = "";
+const CORRECT_PASSWORD = "290898";
 
 const $ = id => document.getElementById(id);
 
@@ -360,39 +359,14 @@ function backMenu() {
 let pasienData = [];
 
 function openPasienSisipPrompt() {
-    let action = prompt("Masukkan Password untuk akses Pasien Sisip:\n(Ketik 'GANTI' jika ingin mengganti password melalui email)");
+    let inputPwd = prompt("Masukkan Password untuk akses Pasien Sisip:");
     
-    if (action === null) return;
+    if (inputPwd === null) return;
     
-    if (action.toUpperCase() === "GANTI") {
-        requestOTPFlow();
-        return;
-    }
-    
-    if (action === currentPasienPassword) {
+    if (inputPwd === CORRECT_PASSWORD) {
         openPasienSisip();
     } else {
         alert("Password salah!");
-    }
-}
-
-function requestOTPFlow() {
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    alert(`[Simulasi Sistem]\nKode OTP telah dikirim ke email: abbackup070809@gmail.com\n\n(Untuk simulasi, kode OTP Anda adalah: ${generatedOTP})`);
-    
-    let inputOtp = prompt("Masukkan 6 digit kode OTP yang dikirim ke email abbackup070809@gmail.com:");
-    if (inputOtp === generatedOTP) {
-        let newPwd = prompt("Verifikasi OTP Berhasil!\nMasukkan Password Baru Anda:");
-        if (newPwd && newPwd.trim().length > 0) {
-            currentPasienPassword = newPwd.trim();
-            localStorage.setItem("pipp_pasien_pwd", currentPasienPassword);
-            alert("Password berhasil diubah! Silakan masuk kembali.");
-            openPasienSisipPrompt();
-        } else {
-            alert("Password baru tidak boleh kosong.");
-        }
-    } else {
-        alert("Kode OTP salah atau dibatalkan.");
     }
 }
 
