@@ -66,10 +66,10 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .input-group { text-align: left; }
 .table-container { margin-top: 20px; border-radius: 8px; border: 1px solid #dfe5ef; background: #fff;}
 .pasien-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; table-layout: fixed; }
-.pasien-table th, .pasien-table td { padding: 11px 8px; border: 1px solid #dfe5ef; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; }
+.pasien-table th, .pasien-table td { padding: 11px 8px; border: 1px solid #dfe5ef; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; font-weight: bold; } /* Semua isi baris tabel jadi bold */
 .pasien-table th { background: #41b8bc; color: white; font-weight: 600; font-size: 13px; }
-.pasien-table td { color: #555; font-size: 13px; }
-.btn-delete { background: #e5484d; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; width: auto; font-size: 12px; box-shadow: none; margin-top: 0;}
+.pasien-table td { color: #333; font-size: 13px; }
+.btn-delete { background: #e5484d; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; width: auto; font-size: 12px; box-shadow: none; margin-top: 0; font-weight: normal;}
 
 @media(max-width:768px){
     .card.landscape-mode { width: 100%; }
@@ -431,7 +431,7 @@ function renderPasienTable() {
     tbody.innerHTML = "";
     
     if (pasienData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:15px; color:#999;">Belum ada data rekapan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:15px; color:#999; font-weight:normal;">Belum ada data rekapan.</td></tr>`;
         return;
     }
 
@@ -441,12 +441,12 @@ function renderPasienTable() {
             <td style="text-align: center;">${i + 1}</td>
             <td>${p.tglKeluhan}</td>
             <td>${p.tglSisip}</td>
-            <td style="font-weight:600; color:#249cf5;">${p.dokterTujuan}</td>
-            <td style="font-weight:600; color:#333;">${p.nama}</td>
+            <td>${p.dokterTujuan}</td>
+            <td>${p.nama}</td>
             <td>${p.sumber}</td>
             <td>${p.nohp}</td>
             <td>${p.keterangan}</td>
-            <td style="text-align: center; color: #41b8bc; font-weight: bold;">${p.jam}</td>
+            <td style="text-align: center; color: #800000; font-weight: bold;">${p.jam}</td>
             <td style="text-align: center;">
                 <button class="btn-delete" onclick="removePasien(${i})">X</button>
             </td>
@@ -466,10 +466,11 @@ function exportPasienExcel() {
         <head>
             <meta charset="UTF-8">
             <style>
-                table { border-collapse: collapse; width: 100%; }
+                table { border-collapse: collapse; width: 100%; font-weight: bold; }
                 th { background-color: #41b8bc; color: #ffffff; font-weight: bold; border: 1px solid #000000; padding: 8px; text-align: center; }
-                td { border: 1px solid #000000; padding: 6px; text-align: left; }
+                td { border: 1px solid #000000; padding: 6px; text-align: left; font-weight: bold; }
                 .center { text-align: center; }
+                .jam-excel { color: #800000; font-weight: bold; text-align: center; }
             </style>
         </head>
         <body>
@@ -502,7 +503,7 @@ function exportPasienExcel() {
                 <td>${p.sumber}</td>
                 <td>${p.nohp}</td>
                 <td>${p.keterangan}</td>
-                <td class="center">${p.jam}</td>
+                <td class="jam-excel">${p.jam}</td>
             </tr>
         `;
     });
