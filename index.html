@@ -43,4 +43,943 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .file-info{margin-top:12px;padding:12px;border-radius:10px;background:#f1f6fc;color:#526176;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
 .merge-help{font-size:12px;color:#718096;line-height:1.6;margin:10px 0;text-align:center}
 .merge-pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px;text-align:left}
-.merge-page{position:relative;border:2px solid #e2e8f0
+.merge-page{position:relative;border:2px solid #e2e8f0;border-radius:12px;padding:8px;background:#fff;cursor:grab;min-width:0;touch-action:pan-y;transition:border-color .15s,transform .15s}
+.merge-page:active{cursor:grabbing}
+.merge-page.dragging{opacity:.4;border-color:#2498f5}
+.merge-page.drag-over{border-color:#2498f5;background:#eef8ff}
+.merge-page img{display:block;width:100%;height:150px;object-fit:contain;background:#f4f7fb;border-radius:6px}
+.merge-page .page-name{font-size:10px;color:#526176;overflow-wrap:anywhere;margin-top:7px;line-height:1.4}
+.merge-page .page-number{font-size:11px;font-weight:700;color:#2498f5;margin-top:4px}
+.merge-page .remove-page{position:absolute;top:5px;right:5px;width:26px;height:26px;margin:0;padding:0;border-radius:50%;background:#e5484d;color:white;font-size:16px;box-shadow:none;z-index:2}
+.merge-actions{display:flex;gap:8px}
+.merge-actions button{flex:1;font-size:12px;padding:11px 6px}
+@media(max-width:360px){.merge-pages{grid-template-columns:1fr}}
+.progress-track{width:100%;height:7px;border-radius:10px;background:#e9eef5;margin-top:14px;overflow:hidden}
+.progress-bar{width:0;height:100%;border-radius:10px;background:linear-gradient(90deg,#25c8e8,#249cf5);transition:width .2s}
+.status-success{color:#16844a!important}
+.status-error{color:#d53d49!important}
+.back-button{margin-top:24px}
+@media(max-width:480px){.card{padding:26px 20px}h2{font-size:30px}}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h2 id="title">PIPP-Calc</h2>
+<div class="subtitle" id="subtitle">Automatic BPJS Date Calculator</div>
+
+<div id="menu">
+    <div class="main-option" onclick="openAdmin()">PIPP Administration</div>
+    <div class="main-option" onclick="openConverter()">Converter</div>
+</div>
+
+<div id="admin" class="hidden">
+    <p class="desc" id="desc">Silahkan masukkan tanggal Surat Rujukan dikeluarkan:</p>
+    <div class="options">
+        <div class="opt-btn active" onclick="setMode(90,'days',this,1)">Masa Aktif Surat Rujukan</div>
+        <div class="opt-btn" onclick="setMode(23,'days',this,2)">Batas Klaim Kacamata ke Optik</div>
+        <div class="opt-btn" onclick="setMode(2,'years',this,3)">Klaim 1x 2 Th</div>
+    </div>
+    <input type="date" id="startDate">
+    <button onclick="calculateDate()">Calculate Date</button>
+    <div id="result"></div>
+    <button class="secondary-btn back-button" onclick="backMenu()">Back</button>
+</div>
+
+<div id="converter" class="hidden">
+    <div id="converterMenu">
+        <div class="main-option" onclick="openSKL()">Converter SKL BBL</div>
+        <div class="main-option" onclick="openJPGPDF()">Converter JPG to PDF</div>
+        <div class="main-option" onclick="openPDFJPG()">Converter PDF to JPG</div>
+        <div class="main-option" onclick="openMergePDF()">Merge PDF</div>
+    </div>
+
+    <div id="sklBox" class="hidden converter-panel">
+        <p class="desc">Compress image into JPG under 100 KB.</p>
+        <label class="upload-area">
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Choose an image</div>
+            <div class="upload-subtitle">Select a photo or document image</div>
+            <input type="file" id="sklInput" accept="image/*">
+        </label>
+        <div id="sklFileInfo" class="file-info hidden"></div>
+        <button id="sklButton" onclick="convertSKL()">Compress to JPG</button>
+        <div id="sklResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
+    </div>
+
+    <div id="jpgpdfBox" class="hidden converter-panel">
+        <p class="desc">Convert images into PDF. The original image content is preserved, without OCR or rewriting text.</p>
+        <label class="upload-area">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-title">Select image files</div>
+            <div class="upload-subtitle">Multiple images are supported. Each image becomes one PDF page.</div>
+            <input type="file" id="jpgPdfInput" accept="image/*" multiple>
+        </label>
+        <div id="jpgPdfFileInfo" class="file-info hidden"></div>
+        <button id="jpgPdfButton" onclick="convertJPGPDF()">Convert to PDF</button>
+        <div class="progress-track hidden" id="jpgPdfProgressTrack"><div class="progress-bar" id="jpgPdfProgressBar"></div></div>
+        <div id="jpgPdfResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
+    </div>
+
+    <div id="pdfjpgBox" class="hidden converter-panel">
+        <p class="desc">Convert every PDF page into a JPG image. The PDF page is rendered directly; text is not retyped or reconstructed.</p>
+        <label class="upload-area">
+            <div class="upload-icon">📑</div>
+            <div class="upload-title">Select a PDF file</div>
+            <div class="upload-subtitle">Setiap halaman akan langsung diunduh secara terpisah sebagai file JPG.</div>
+            <input type="file" id="pdfInput" accept="application/pdf,.pdf">
+        </label>
+        <div id="pdfFileInfo" class="file-info hidden"></div>
+        <button id="pdfJpgButton" onclick="convertPDFJPG()">Convert to JPG</button>
+        <div class="progress-track hidden" id="pdfJpgProgressTrack"><div class="progress-bar" id="pdfJpgProgressBar"></div></div>
+        <div id="pdfJpgResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
+    </div>
+
+    <div id="mergePdfBox" class="hidden converter-panel">
+        <p class="desc">Gabungkan beberapa PDF dan atur urutan halaman dengan menggeser kartu halaman (drag and drop), seperti iLovePDF.</p>
+        <label class="upload-area">
+            <div class="upload-icon">📚</div>
+            <div class="upload-title">Pilih beberapa file PDF</div>
+            <div class="upload-subtitle">Halaman dari semua PDF akan ditampilkan agar urutannya bisa diatur.</div>
+            <input type="file" id="mergePdfInput" accept="application/pdf,.pdf" multiple>
+        </label>
+        <div id="mergePdfFileInfo" class="file-info hidden"></div>
+        <p class="merge-help">Geser kartu halaman ke posisi yang diinginkan. Nomor urutan diperbarui otomatis. Tekan × untuk menghapus halaman.</p>
+        <div id="mergePages" class="merge-pages"></div>
+        <div class="merge-actions">
+            <button type="button" class="secondary-btn" onclick="resetMergePages()">Reset</button>
+            <button type="button" id="mergePdfButton" onclick="exportMergedPDF()">Merge & Download PDF</button>
+        </div>
+        <div class="progress-track hidden" id="mergeProgressTrack"><div class="progress-bar" id="mergeProgressBar"></div></div>
+        <div id="mergePdfResult" aria-live="polite"></div>
+        <button class="secondary-btn" onclick="backConverter()">Back to Converter</button>
+    </div>
+
+    <button class="secondary-btn back-button" id="converterBackButton" onclick="backMenu()">Back to Main Menu</button>
+</div>
+</div>
+
+<script>
+/* PDF.JS CONFIGURATION */
+const PDFJS_VERSION = "3.11.174";
+const PDFJS_BASE =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + "pdf.worker.min.js";
+
+const PDFJS_OPTIONS = {
+    cMapUrl: PDFJS_BASE + "cmaps/",
+    cMapPacked: true,
+    standardFontDataUrl: PDFJS_BASE + "standard_fonts/",
+    useSystemFonts: true,
+    isEvalSupported: false
+};
+
+let modeValue = 90;
+let modeType = "days";
+
+const $ = id => document.getElementById(id);
+
+const menu = $("menu");
+const admin = $("admin");
+const converter = $("converter");
+const title = $("title");
+const subtitle = $("subtitle");
+const desc = $("desc");
+
+const converterMenu = $("converterMenu");
+const sklBox = $("sklBox");
+const jpgpdfBox = $("jpgpdfBox");
+const pdfjpgBox = $("pdfjpgBox");
+const mergePdfBox = $("mergePdfBox");
+
+const sklInput = $("sklInput");
+const jpgPdfInput = $("jpgPdfInput");
+const pdfInput = $("pdfInput");
+const mergePdfInput = $("mergePdfInput");
+
+const sklResult = $("sklResult");
+const jpgPdfResult = $("jpgPdfResult");
+const pdfJpgResult = $("pdfJpgResult");
+
+function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + " bytes";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
+    return (bytes / 1048576).toFixed(2) + " MB";
+}
+
+function setStatus(el, message, type = "") {
+    el.className = type;
+    el.textContent = message;
+}
+
+function setProgress(trackId, barId, percent) {
+    $(trackId).classList.remove("hidden");
+    $(barId).style.width = Math.max(0, Math.min(100, percent)) + "%";
+}
+
+function resetProgress(trackId, barId) {
+    $(trackId).classList.add("hidden");
+    $(barId).style.width = "0%";
+}
+
+function safeFilename(name) {
+    return name.replace(/\.[^.]+$/, "")
+        .replace(/[<>:"/\\|?*\x00-\x1F]/g, "_").trim() || "converted";
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+
+function openAdmin() {
+    menu.classList.add("hidden");
+    converter.classList.add("hidden");
+    admin.classList.remove("hidden");
+    title.textContent = "PIPP-Calc";
+    subtitle.textContent = "Automatic BPJS Date Calculator";
+}
+
+function openConverter() {
+    menu.classList.add("hidden");
+    admin.classList.add("hidden");
+    converter.classList.remove("hidden");
+    title.textContent = "PIPP-Converter";
+    subtitle.textContent = "Simple and Easy File Conversion";
+    backConverter();
+}
+
+function backMenu() {
+    menu.classList.remove("hidden");
+    admin.classList.add("hidden");
+    converter.classList.add("hidden");
+    title.textContent = "PIPP-Calc";
+    subtitle.textContent = "Automatic BPJS Date Calculator";
+}
+
+function hideBoxes() {
+    sklBox.classList.add("hidden");
+    jpgpdfBox.classList.add("hidden");
+    pdfjpgBox.classList.add("hidden");
+    mergePdfBox.classList.add("hidden");
+}
+
+function backConverter() {
+    hideBoxes();
+    converterMenu.classList.remove("hidden");
+    $("converterBackButton").classList.remove("hidden");
+}
+
+function openSKL() {
+    hideBoxes();
+    converterMenu.classList.add("hidden");
+    $("converterBackButton").classList.add("hidden");
+    sklBox.classList.remove("hidden");
+    sklResult.textContent = "";
+}
+
+function openJPGPDF() {
+    hideBoxes();
+    converterMenu.classList.add("hidden");
+    $("converterBackButton").classList.add("hidden");
+    jpgpdfBox.classList.remove("hidden");
+    jpgPdfResult.textContent = "";
+    resetProgress("jpgPdfProgressTrack", "jpgPdfProgressBar");
+}
+
+function openPDFJPG() {
+    hideBoxes();
+    converterMenu.classList.add("hidden");
+    $("converterBackButton").classList.add("hidden");
+    pdfjpgBox.classList.remove("hidden");
+    pdfJpgResult.textContent = "";
+    resetProgress("pdfJpgProgressTrack", "pdfJpgProgressBar");
+}
+
+/* MERGE PDF */
+let mergePageItems = [];
+let mergeOriginalFiles = [];
+let mergeDragIndex = null;
+
+function openMergePDF() {
+    hideBoxes();
+    converterMenu.classList.add("hidden");
+    $("converterBackButton").classList.add("hidden");
+    mergePdfBox.classList.remove("hidden");
+    $("mergePdfResult").textContent = "";
+}
+
+mergePdfInput.addEventListener("change", async () => {
+    const files = Array.from(mergePdfInput.files || []);
+    const info = $("mergePdfFileInfo");
+    $("mergePages").innerHTML = "";
+    mergePageItems = [];
+    mergeOriginalFiles = files;
+    $("mergePdfResult").textContent = "";
+    resetProgress("mergeProgressTrack", "mergeProgressBar");
+
+    info.classList.toggle("hidden", !files.length);
+    if (!files.length) return;
+
+    info.textContent = `Loading ${files.length} PDF file(s)...`;
+    const button = $("mergePdfButton");
+    button.disabled = true;
+
+    try {
+        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+            const file = files[fileIndex];
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            const previewPdf = await pdfjsLib.getDocument({
+                ...PDFJS_OPTIONS,
+                data: bytes
+            }).promise;
+
+            for (let pageNumber = 1; pageNumber <= previewPdf.numPages; pageNumber++) {
+                const page = await previewPdf.getPage(pageNumber);
+                const viewport = page.getViewport({ scale: 0.45 });
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d", { alpha: false });
+
+                canvas.width = Math.max(1, Math.ceil(viewport.width));
+                canvas.height = Math.max(1, Math.ceil(viewport.height));
+
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                await page.render({
+                    canvasContext: ctx,
+                    viewport,
+                    background: "#FFFFFF"
+                }).promise;
+
+                mergePageItems.push({
+                    id: `${fileIndex}_${pageNumber}_${mergePageItems.length}`,
+                    fileIndex,
+                    pageNumber,
+                    fileName: file.name,
+                    thumbnail: canvas.toDataURL("image/jpeg", 0.75)
+                });
+
+                page.cleanup();
+                canvas.width = 0;
+                canvas.height = 0;
+            }
+
+            await previewPdf.destroy();
+        }
+
+        info.textContent = `${files.length} PDF file(s) · ${mergePageItems.length} page(s) total`;
+        renderMergePages();
+        setStatus(
+            $("mergePdfResult"),
+            "Halaman siap diatur. Geser kartu ke urutan yang diinginkan.",
+            ""
+        );
+    } catch (e) {
+        console.error(e);
+        setStatus(
+            $("mergePdfResult"),
+            "Tidak dapat membaca salah satu PDF. Pastikan file tidak rusak atau tidak terkunci kata sandi.",
+            "status-error"
+        );
+        info.textContent = "Gagal memuat halaman PDF.";
+    } finally {
+        button.disabled = false;
+    }
+});
+
+function renderMergePages() {
+    const container = $("mergePages");
+    container.innerHTML = "";
+
+    mergePageItems.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "merge-page";
+        card.draggable = true;
+        card.dataset.index = index;
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "remove-page";
+        remove.textContent = "×";
+        remove.title = "Hapus halaman ini";
+
+        remove.addEventListener("click", event => {
+            event.stopPropagation();
+            mergePageItems.splice(index, 1);
+            renderMergePages();
+            setStatus(
+                $("mergePdfResult"),
+                `${mergePageItems.length} halaman tersisa.`,
+                ""
+            );
+        });
+
+        const img = document.createElement("img");
+        img.src = item.thumbnail;
+        img.alt = `Pratinjau halaman urutan ${index + 1}`;
+
+        const pageNo = document.createElement("div");
+        pageNo.className = "page-number";
+        pageNo.textContent = `Urutan ${index + 1}`;
+
+        const fileName = document.createElement("div");
+        fileName.className = "page-name";
+        fileName.textContent = `${item.fileName} · halaman asli ${item.pageNumber}`;
+
+        card.append(remove, img, pageNo, fileName);
+
+        card.addEventListener("dragstart", event => {
+            mergeDragIndex = index;
+            card.classList.add("dragging");
+            event.dataTransfer.effectAllowed = "move";
+            event.dataTransfer.setData("text/plain", String(index));
+        });
+
+        card.addEventListener("dragend", () => {
+            mergeDragIndex = null;
+            card.classList.remove("dragging");
+            container.querySelectorAll(".drag-over").forEach(el =>
+                el.classList.remove("drag-over")
+            );
+        });
+
+        card.addEventListener("dragover", event => {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+            card.classList.add("drag-over");
+        });
+
+        card.addEventListener("dragleave", () => {
+            card.classList.remove("drag-over");
+        });
+
+        card.addEventListener("drop", event => {
+            event.preventDefault();
+            card.classList.remove("drag-over");
+
+            const from = mergeDragIndex;
+            const to = Number(card.dataset.index);
+
+            if (from === null || from === to || from < 0 || to < 0) return;
+
+            const [moved] = mergePageItems.splice(from, 1);
+            mergePageItems.splice(to, 0, moved);
+            renderMergePages();
+        });
+
+        container.appendChild(card);
+    });
+}
+
+function resetMergePages() {
+    mergePageItems = [];
+    mergeOriginalFiles = [];
+    mergePdfInput.value = "";
+    $("mergePages").innerHTML = "";
+    $("mergePdfFileInfo").textContent = "";
+    $("mergePdfFileInfo").classList.add("hidden");
+    $("mergePdfResult").textContent = "";
+    resetProgress("mergeProgressTrack", "mergeProgressBar");
+}
+
+async function exportMergedPDF() {
+    const button = $("mergePdfButton");
+
+    if (!mergePageItems.length || !mergeOriginalFiles.length) {
+        setStatus(
+            $("mergePdfResult"),
+            "Pilih file PDF terlebih dahulu.",
+            "status-error"
+        );
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        const { PDFDocument } = PDFLib;
+        const sourceDocs = [];
+
+        for (const file of mergeOriginalFiles) {
+            sourceDocs.push(await PDFDocument.load(await file.arrayBuffer()));
+        }
+
+        const output = await PDFDocument.create();
+
+        for (let i = 0; i < mergePageItems.length; i++) {
+            const item = mergePageItems[i];
+
+            setStatus(
+                $("mergePdfResult"),
+                `Menggabungkan halaman ${i + 1} dari ${mergePageItems.length}...`
+            );
+
+            setProgress(
+                "mergeProgressTrack",
+                "mergeProgressBar",
+                (i + 1) / mergePageItems.length * 95
+            );
+
+            const [copiedPage] = await output.copyPages(
+                sourceDocs[item.fileIndex],
+                [item.pageNumber - 1]
+            );
+
+            output.addPage(copiedPage);
+        }
+
+        const bytes = await output.save();
+
+        downloadBlob(
+            new Blob([bytes], { type: "application/pdf" }),
+            `${safeFilename(mergeOriginalFiles[0].name)}_merged.pdf`
+        );
+
+        setProgress("mergeProgressTrack", "mergeProgressBar", 100);
+
+        setStatus(
+            $("mergePdfResult"),
+            "Merge PDF berhasil!",
+            "status-success"
+        );
+
+    } catch (e) {
+        console.error(e);
+        setStatus(
+            $("mergePdfResult"),
+            "Gagal menggabungkan PDF. Pastikan file tidak rusak atau tidak diproteksi kata sandi.",
+            "status-error"
+        );
+    } finally {
+        button.disabled = false;
+    }
+}
+
+function setMode(v, t, el, i) {
+    modeValue = v;
+    modeType = t;
+
+    document.querySelectorAll(".opt-btn").forEach(x =>
+        x.classList.remove("active")
+    );
+
+    el.classList.add("active");
+
+    desc.textContent = i === 1
+        ? "Silahkan masukkan tanggal Surat Rujukan dikeluarkan:"
+        : i === 2
+        ? "Silahkan masukkan tanggal Klaim Kacamata terakhir:"
+        : "Silahkan masukkan tanggal Klaim Kacamata 2 tahun terakhir:";
+}
+
+function calculateDate() {
+    const value = $("startDate").value;
+
+    if (!value) {
+        $("result").textContent = "Choose date first.";
+        return;
+    }
+
+    const d = new Date(value + "T00:00:00");
+
+    if (modeType === "days") {
+        d.setDate(d.getDate() + modeValue);
+    } else {
+        const day = d.getDate();
+        d.setDate(1);
+        d.setFullYear(d.getFullYear() + modeValue);
+
+        const last = new Date(
+            d.getFullYear(),
+            d.getMonth() + 1,
+            0
+        ).getDate();
+
+        d.setDate(Math.min(day, last));
+    }
+
+    $("result").innerHTML =
+        `Result: <span class="highlight">${d.toLocaleDateString("en-GB")}</span>`;
+}
+
+/* File selection info */
+sklInput.addEventListener("change", () => {
+    const f = sklInput.files[0];
+    const info = $("sklFileInfo");
+
+    info.classList.toggle("hidden", !f);
+
+    if (f) info.textContent = `${f.name} · ${formatBytes(f.size)}`;
+
+    sklResult.textContent = "";
+});
+
+jpgPdfInput.addEventListener("change", () => {
+    const files = Array.from(jpgPdfInput.files);
+    const info = $("jpgPdfFileInfo");
+
+    info.classList.toggle("hidden", !files.length);
+
+    if (files.length) {
+        info.textContent =
+            `${files.length} image(s) · ${formatBytes(files.reduce((s, f) => s + f.size, 0))}`;
+    }
+
+    jpgPdfResult.textContent = "";
+});
+
+pdfInput.addEventListener("change", () => {
+    const f = pdfInput.files[0];
+    const info = $("pdfFileInfo");
+
+    info.classList.toggle("hidden", !f);
+
+    if (f) info.textContent = `${f.name} · ${formatBytes(f.size)}`;
+
+    pdfJpgResult.textContent = "";
+});
+
+function loadImage(file) {
+    return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve(img);
+        };
+
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("Unable to open this image."));
+        };
+
+        img.src = url;
+    });
+}
+
+function canvasToBlob(canvas, type, quality) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(
+            blob => blob
+                ? resolve(blob)
+                : reject(new Error("Unable to encode image.")),
+            type,
+            quality
+        );
+    });
+}
+
+/* SKL BBL: STRICTLY UNDER 100 KB */
+async function convertSKL() {
+    const file = sklInput.files[0];
+    const button = $("sklButton");
+    const MAX_BYTES = 100 * 1024;
+
+    if (!file) {
+        setStatus(sklResult, "Please choose an image first.", "status-error");
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        const img = await loadImage(file);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        let w = img.naturalWidth;
+        let h = img.naturalHeight;
+        let quality = 0.85;
+
+        for (let i = 0; i < 400; i++) {
+            canvas.width = w;
+            canvas.height = h;
+
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, w, h);
+            ctx.drawImage(img, 0, 0, w, h);
+
+            const blob = await canvasToBlob(canvas, "image/jpeg", quality);
+
+            if (blob.size < MAX_BYTES) {
+                downloadBlob(blob, "SKL_BBL.jpg");
+
+                setStatus(
+                    sklResult,
+                    `Success! JPG size: ${formatBytes(blob.size)}. Under 100 KB.`,
+                    "status-success"
+                );
+
+                return;
+            }
+
+            if (quality > 0.15) {
+                quality = Math.max(0.15, quality - 0.1);
+            } else {
+                const factor = Math.min(
+                    0.85,
+                    Math.sqrt(MAX_BYTES * 0.75 / blob.size)
+                );
+
+                w = Math.max(1, Math.floor(w * factor));
+                h = Math.max(1, Math.floor(h * factor));
+                quality = 0.82;
+            }
+        }
+
+        throw new Error("Could not meet the 100 KB limit.");
+
+    } catch (e) {
+        setStatus(
+            sklResult,
+            e.message || "Compression failed.",
+            "status-error"
+        );
+    } finally {
+        button.disabled = false;
+    }
+}
+
+/* JPG TO PDF */
+async function convertJPGPDF() {
+    const files = Array.from(jpgPdfInput.files);
+    const button = $("jpgPdfButton");
+
+    if (!files.length) {
+        setStatus(
+            jpgPdfResult,
+            "Please select at least one image.",
+            "status-error"
+        );
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+        const { jsPDF } = window.jspdf;
+        let pdf = null;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            setStatus(
+                jpgPdfResult,
+                `Processing ${i + 1} of ${files.length}: ${file.name}`
+            );
+
+            setProgress(
+                "jpgPdfProgressTrack",
+                "jpgPdfProgressBar",
+                (i + 1) / files.length * 90
+            );
+
+            const img = await loadImage(file);
+            const landscape = img.naturalWidth > img.naturalHeight;
+            const pageW = landscape ? 297 : 210;
+            const pageH = landscape ? 210 : 297;
+            const margin = 8;
+
+            if (!pdf) {
+                pdf = new jsPDF({
+                    orientation: landscape ? "landscape" : "portrait",
+                    unit: "mm",
+                    format: "a4",
+                    compress: true
+                });
+            } else {
+                pdf.addPage("a4", landscape ? "landscape" : "portrait");
+            }
+
+            const scale = Math.min(
+                (pageW - 2 * margin) / img.naturalWidth,
+                (pageH - 2 * margin) / img.naturalHeight
+            );
+
+            const w = img.naturalWidth * scale;
+            const h = img.naturalHeight * scale;
+            const x = (pageW - w) / 2;
+            const y = (pageH - h) / 2;
+
+            let data;
+            let format;
+
+            if (file.type === "image/jpeg" || file.type === "image/jpg") {
+                data = await readAsDataURL(file);
+                format = "JPEG";
+            } else if (file.type === "image/png") {
+                data = await readAsDataURL(file);
+                format = "PNG";
+            } else {
+                const canvas = document.createElement("canvas");
+
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+
+                const ctx = canvas.getContext("2d");
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                data = canvas.toDataURL("image/png");
+                format = "PNG";
+            }
+
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(0, 0, pageW, pageH, "F");
+            pdf.addImage(data, format, x, y, w, h, undefined, "NONE");
+        }
+
+        setProgress("jpgPdfProgressTrack", "jpgPdfProgressBar", 100);
+
+        const name = files.length === 1
+            ? safeFilename(files[0].name) + ".pdf"
+            : "converted_images.pdf";
+
+        pdf.save(name);
+
+        setStatus(
+            jpgPdfResult,
+            `Success! ${files.length} image(s) converted. The image content has not been OCR-rewritten.`,
+            "status-success"
+        );
+
+    } catch (e) {
+        console.error(e);
+        setStatus(
+            jpgPdfResult,
+            "Conversion failed. Please check the image files.",
+            "status-error"
+        );
+    } finally {
+        button.disabled = false;
+    }
+}
+
+function readAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Unable to read file."));
+
+        reader.readAsDataURL(file);
+    });
+}
+
+/* PDF TO JPG (Direct JPG Download) */
+async function convertPDFJPG() {
+    const file = pdfInput.files[0];
+    const button = $("pdfJpgButton");
+
+    if (!file) {
+        setStatus(pdfJpgResult, "Please choose a PDF first.", "status-error");
+        return;
+    }
+
+    button.disabled = true;
+    let pdf = null;
+
+    try {
+        const data = new Uint8Array(await file.arrayBuffer());
+
+        pdf = await pdfjsLib.getDocument({
+            ...PDFJS_OPTIONS,
+            data
+        }).promise;
+
+        const baseName = safeFilename(file.name);
+        const total = pdf.numPages;
+
+        for (let n = 1; n <= total; n++) {
+            setStatus(
+                pdfJpgResult,
+                `Mengekstrak dan mengunduh halaman ${n} dari ${total}...`
+            );
+
+            setProgress(
+                "pdfJpgProgressTrack",
+                "pdfJpgProgressBar",
+                n / total * 100
+            );
+
+            const page = await pdf.getPage(n);
+            const originalViewport = page.getViewport({ scale: 1 });
+            const maxDimension = 6000;
+
+            const scale = Math.min(
+                2,
+                maxDimension / Math.max(
+                    originalViewport.width,
+                    originalViewport.height
+                )
+            );
+
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d", { alpha: false });
+
+            canvas.width = Math.ceil(viewport.width);
+            canvas.height = Math.ceil(viewport.height);
+
+            context.fillStyle = "#FFFFFF";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            await page.render({
+                canvasContext: context,
+                viewport,
+                background: "#FFFFFF",
+                intent: "display"
+            }).promise;
+
+            const blob = await canvasToBlob(canvas, "image/jpeg", 1.0);
+            const pageName = `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
+
+            downloadBlob(blob, pageName);
+            
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            canvas.width = 0;
+            canvas.height = 0;
+            page.cleanup();
+        }
+
+        setStatus(
+            pdfJpgResult,
+            "Selesai!",
+            "status-success"
+        );
+
+    } catch (e) {
+        console.error("PDF-to-JPG error:", e);
+
+        setStatus(
+            pdfJpgResult,
+            "Gagal mengonversi. Pastikan file PDF tidak rusak atau terkunci kata sandi.",
+            "status-error"
+        );
+    } finally {
+        if (pdf) {
+            try {
+                await pdf.destroy();
+            } catch (_) {}
+        }
+
+        button.disabled = false;
+    }
+}
+</script>
+</body>
+</html>
