@@ -117,7 +117,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         </div>
         <div class="input-group">
             <label>Dokter Yang Dituju</label>
-            <input type="text" id="psDokterTujuan" placeholder="Nama Dokter Tujuan">
+            <input type="text" id="psDokterTujuan" placeholder="dr. Strange">
         </div>
         <div class="input-group">
             <label>Nama Peserta</label>
@@ -125,7 +125,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         </div>
         <div class="input-group">
             <label>Sumber Konfirmasi</label>
-            <input type="text" id="psSumber" placeholder="IGD / Rawat Jalan">
+            <input type="text" id="psSumber" placeholder="Ps keluhan PIPP & Kk An">
         </div>
         <div class="input-group">
             <label>Nomor HP</label>
@@ -133,7 +133,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         </div>
         <div class="input-group">
             <label>ACC NS/ DOKTER + EXT</label>
-            <input type="text" id="psKeterangan" placeholder="ACC dr. Andi (Ext 123)">
+            <input type="text" id="psKeterangan" placeholder="Acc dr. Strange (Ext 123)">
         </div>
         <div class="input-group">
             <label>Jam Konfirmasi</label>
@@ -461,7 +461,6 @@ function exportPasienExcel() {
         return;
     }
 
-    // Membuat format tabel HTML agar dapat dibaca langsung oleh Excel sebagai file .xls
     let htmlContent = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
         <head>
