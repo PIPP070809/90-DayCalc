@@ -128,7 +128,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         <label class="upload-area">
             <div class="upload-icon">📑</div>
             <div class="upload-title">Select a PDF file</div>
-            <div class="upload-subtitle">Every page will be converted and packaged into a ZIP file.</div>
+            <div class="upload-subtitle">Setiap halaman akan langsung diunduh secara terpisah sebagai file JPG.</div>
             <input type="file" id="pdfInput" accept="application/pdf,.pdf">
         </label>
         <div id="pdfFileInfo" class="file-info hidden"></div>
@@ -548,7 +548,6 @@ async function exportMergedPDF() {
 
         setProgress("mergeProgressTrack", "mergeProgressBar", 100);
 
-        /* Pesan sukses disederhanakan sesuai permintaan */
         setStatus(
             $("mergePdfResult"),
             "Merge PDF berhasil!",
@@ -880,7 +879,7 @@ function readAsDataURL(file) {
     });
 }
 
-/* PDF TO JPG */
+/* PDF TO JPG (Direct JPG Download) */
 async function convertPDFJPG() {
     const file = pdfInput.files[0];
     const button = $("pdfJpgButton");
@@ -901,20 +900,19 @@ async function convertPDFJPG() {
             data
         }).promise;
 
-        const zip = new JSZip();
         const baseName = safeFilename(file.name);
         const total = pdf.numPages;
 
         for (let n = 1; n <= total; n++) {
             setStatus(
                 pdfJpgResult,
-                `Rendering original PDF page ${n} of ${total}...`
+                `Mengekstrak dan mengunduh halaman ${n} dari ${total}...`
             );
 
             setProgress(
                 "pdfJpgProgressTrack",
                 "pdfJpgProgressBar",
-                n / total * 90
+                n / total * 100
             );
 
             const page = await pdf.getPage(n);
@@ -946,37 +944,21 @@ async function convertPDFJPG() {
                 intent: "display"
             }).promise;
 
-            const blob = await canvasToBlob(canvas, "image/jpeg", 0.95);
+            const blob = await canvasToBlob(canvas, "image/jpeg", 1.0);
+            const pageName = `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
 
-            const pageName =
-                `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
-
-            zip.file(pageName, blob);
+            downloadBlob(blob, pageName);
+            
+            await new Promise(resolve => setTimeout(resolve, 300));
 
             canvas.width = 0;
             canvas.height = 0;
             page.cleanup();
         }
 
-        setStatus(pdfJpgResult, "Packaging JPG images into ZIP...");
-
-        const zipBlob = await zip.generateAsync({
-            type: "blob",
-            compression: "DEFLATE",
-            compressionOptions: { level: 3 }
-        }, meta => {
-            setProgress(
-                "pdfJpgProgressTrack",
-                "pdfJpgProgressBar",
-                90 + meta.percent * 0.1
-            );
-        });
-
-        downloadBlob(zipBlob, `${baseName}_JPG.zip`);
-
         setStatus(
             pdfJpgResult,
-            `Success! All ${total} pages converted into JPG images. Extract ${baseName}_JPG.zip to access the images.`,
+            `Sukses! ${total} halaman telah diunduh sebagai gambar JPG. (Catatan: Izinkan pop-up/multiple downloads pada browser jika diminta).`,
             "status-success"
         );
 
@@ -985,7 +967,7 @@ async function convertPDFJPG() {
 
         setStatus(
             pdfJpgResult,
-            "Conversion failed. Check the PDF file and internet connection. If characters remain incorrect, the source PDF's font encoding or embedded fonts may require further inspection.",
+            "Gagal mengonversi. Pastikan file PDF tidak rusak atau terkunci kata sandi.",
             "status-error"
         );
     } finally {
