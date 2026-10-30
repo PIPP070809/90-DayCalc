@@ -13,7 +13,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Playfair Display',serif}
 body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:#f5f7fb}
-.card{background:#fff;border-radius:22px;padding:40px;width:520px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12)}
+.card{background:#fff;border-radius:22px;padding:40px;width:560px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12)}
 h2{font-size:36px;color:#333;margin-bottom:8px}
 .subtitle{font-size:14px;color:#999;margin-bottom:28px}
 .main-option{padding:16px;margin:12px 0;border-radius:15px;background:#f2f5fb;color:#555;cursor:pointer;transition:.25s;border:1px solid #e8edf5}
@@ -52,13 +52,28 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .merge-page .remove-page{position:absolute;top:5px;right:5px;width:26px;height:26px;margin:0;padding:0;border-radius:50%;background:#e5484d;color:white;font-size:16px;box-shadow:none;z-index:2}
 .merge-actions{display:flex;gap:8px}
 .merge-actions button{flex:1;font-size:12px;padding:11px 6px}
-@media(max-width:360px){.merge-pages{grid-template-columns:1fr}}
 .progress-track{width:100%;height:7px;border-radius:10px;background:#e9eef5;margin-top:14px;overflow:hidden}
 .progress-bar{width:0;height:100%;border-radius:10px;background:linear-gradient(90deg,#25c8e8,#249cf5);transition:width .2s}
 .status-success{color:#16844a!important}
 .status-error{color:#d53d49!important}
 .back-button{margin-top:24px}
-@media(max-width:480px){.card{padding:26px 20px}h2{font-size:30px}}
+
+/* FORM PASIEN SISIP STYLES */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+.form-grid input { margin: 0; }
+.form-grid label { font-size: 11px; color: #777; text-align: left; display: block; margin-bottom: 4px; font-weight: 600;}
+.input-group { text-align: left; }
+.table-container { overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #dfe5ef; background: #fff;}
+.pasien-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; white-space: nowrap; }
+.pasien-table th { background: #41b8bc; color: white; padding: 10px; border: 1px solid #dfe5ef; font-weight: 600;}
+.pasien-table td { padding: 8px 10px; border: 1px solid #dfe5ef; color: #555;}
+.btn-delete { background: #e5484d; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; width: auto; font-size: 10px; box-shadow: none; margin-top: 0;}
+
+@media(max-width:480px){
+    .card{padding:26px 20px}
+    h2{font-size:30px}
+    .form-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 
@@ -70,6 +85,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 <div id="menu">
     <div class="main-option" onclick="openAdmin()">PIPP Administration</div>
     <div class="main-option" onclick="openConverter()">Converter</div>
+    <div class="main-option" onclick="openPasienSisip()">Pasien Sisip PIPP</div>
 </div>
 
 <div id="admin" class="hidden">
@@ -83,6 +99,65 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
     <button onclick="calculateDate()">Calculate Date</button>
     <div id="result"></div>
     <button class="secondary-btn back-button" onclick="backMenu()">Back</button>
+</div>
+
+<!-- PASIEN SISIP MENU -->
+<div id="pasienSisip" class="hidden">
+    <p class="desc">Isi form di bawah untuk merekap pasien sisip. Data dapat diekspor ke format CSV (Excel).</p>
+    
+    <div class="form-grid">
+        <div class="input-group">
+            <label>Tanggal Penyampaian Keluhan</label>
+            <input type="date" id="psTglKeluhan">
+        </div>
+        <div class="input-group">
+            <label>Tanggal Sisip</label>
+            <input type="date" id="psTglSisip">
+        </div>
+        <div class="input-group" style="grid-column: 1 / -1;">
+            <label>Nama Peserta</label>
+            <input type="text" id="psNama" placeholder="Contoh: Budi Santoso">
+        </div>
+        <div class="input-group">
+            <label>Sumber Konfirmasi / Konteks</label>
+            <input type="text" id="psSumber" placeholder="Contoh: IGD / Rawat Jalan">
+        </div>
+        <div class="input-group">
+            <label>Nomor HP</label>
+            <input type="tel" id="psNoHp" placeholder="Contoh: 08123456789">
+        </div>
+        <div class="input-group" style="grid-column: 1 / -1;">
+            <label>NS ACC / Dokter + Ext + Jam Konfirm</label>
+            <input type="text" id="psKeterangan" placeholder="Contoh: ACC dr. Andi, Sp.PD (14:30)">
+        </div>
+    </div>
+    <button onclick="addPasienSisip()">Tambah Data Rekap</button>
+
+    <div class="table-container">
+        <table class="pasien-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">No</th>
+                    <th>TANGGAL PENYAMPAIAN KELUHAN</th>
+                    <th>TANGGAL SISIP</th>
+                    <th>NAMA PESERTA</th>
+                    <th>SUMBER KONFIRMASI / KONTEKS</th>
+                    <th>NOMOR HP</th>
+                    <th>NS ACC / DOKTER + EXT + JAM KONFIRM</th>
+                    <th style="text-align: center;">Hapus</th>
+                </tr>
+            </thead>
+            <tbody id="psTableBody">
+                <!-- Data goes here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="merge-actions" style="margin-top:10px;">
+        <button type="button" class="secondary-btn" onclick="exportPasienCSV()" style="background:#41b8bc; color:white;">Download Rekap (CSV)</button>
+    </div>
+
+    <button class="secondary-btn back-button" onclick="backMenu()">Back to Main Menu</button>
 </div>
 
 <div id="converter" class="hidden">
@@ -188,6 +263,7 @@ const converter = $("converter");
 const title = $("title");
 const subtitle = $("subtitle");
 const desc = $("desc");
+const pasienSisip = $("pasienSisip");
 
 const converterMenu = $("converterMenu");
 const sklBox = $("sklBox");
@@ -244,6 +320,7 @@ function downloadBlob(blob, filename) {
 function openAdmin() {
     menu.classList.add("hidden");
     converter.classList.add("hidden");
+    pasienSisip.classList.add("hidden");
     admin.classList.remove("hidden");
     title.textContent = "PIPP-Calc";
     subtitle.textContent = "Automatic BPJS Date Calculator";
@@ -252,6 +329,7 @@ function openAdmin() {
 function openConverter() {
     menu.classList.add("hidden");
     admin.classList.add("hidden");
+    pasienSisip.classList.add("hidden");
     converter.classList.remove("hidden");
     title.textContent = "PIPP-Converter";
     subtitle.textContent = "Simple and Easy File Conversion";
@@ -262,10 +340,121 @@ function backMenu() {
     menu.classList.remove("hidden");
     admin.classList.add("hidden");
     converter.classList.add("hidden");
+    pasienSisip.classList.add("hidden");
     title.textContent = "PIPP-Calc";
     subtitle.textContent = "Automatic BPJS Date Calculator";
 }
 
+/* PASIEN SISIP PIPP LOGIC */
+let pasienData = [];
+
+function openPasienSisip() {
+    menu.classList.add("hidden");
+    admin.classList.add("hidden");
+    converter.classList.add("hidden");
+    pasienSisip.classList.remove("hidden");
+    title.textContent = "Pasien Sisip";
+    subtitle.textContent = "Rekap Pasien Sisip PIPP RS Awal Bros";
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    if(!$("psTglKeluhan").value) $("psTglKeluhan").value = today;
+    if(!$("psTglSisip").value) $("psTglSisip").value = today;
+    
+    renderPasienTable();
+}
+
+function addPasienSisip() {
+    const pNama = $("psNama").value.trim();
+    if (!pNama) {
+        alert("Nama Peserta wajib diisi!");
+        return;
+    }
+
+    pasienData.push({
+        tglKeluhan: $("psTglKeluhan").value,
+        tglSisip: $("psTglSisip").value,
+        nama: pNama,
+        sumber: $("psSumber").value.trim(),
+        nohp: $("psNoHp").value.trim(),
+        keterangan: $("psKeterangan").value.trim()
+    });
+
+    // Reset fields except date
+    $("psNama").value = "";
+    $("psSumber").value = "";
+    $("psNoHp").value = "";
+    $("psKeterangan").value = "";
+
+    renderPasienTable();
+}
+
+function removePasien(index) {
+    pasienData.splice(index, 1);
+    renderPasienTable();
+}
+
+function renderPasienTable() {
+    const tbody = $("psTableBody");
+    tbody.innerHTML = "";
+    
+    if (pasienData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:15px; color:#999;">Belum ada data rekapan.</td></tr>`;
+        return;
+    }
+
+    pasienData.forEach((p, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="text-align: center;">${i + 1}</td>
+            <td>${p.tglKeluhan}</td>
+            <td>${p.tglSisip}</td>
+            <td style="font-weight:600; color:#333;">${p.nama}</td>
+            <td>${p.sumber}</td>
+            <td>${p.nohp}</td>
+            <td>${p.keterangan}</td>
+            <td style="text-align: center;">
+                <button class="btn-delete" onclick="removePasien(${i})">X</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function exportPasienCSV() {
+    if (pasienData.length === 0) {
+        alert("Belum ada data untuk diekspor.");
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    // Header
+    csvContent += "No,TANGGAL PENYAMPAIAN KELUHAN,TANGGAL SISIP,NAMA PESERTA,SUMBER KONFIRMASI / KONTEKS,NOMOR HP,NS ACC / DOKTER + EXT + JAM KONFIRM\n";
+
+    // Data rows
+    pasienData.forEach((p, i) => {
+        const row = [
+            i + 1,
+            p.tglKeluhan,
+            p.tglSisip,
+            `"${p.nama}"`,
+            `"${p.sumber}"`,
+            `"${p.nohp}"`,
+            `"${p.keterangan}"`
+        ].join(",");
+        csvContent += row + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "Rekap_Pasien_Sisip_PIPP.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/* CONVERTER MENU LOGIC */
 function hideBoxes() {
     sklBox.classList.add("hidden");
     jpgpdfBox.classList.add("hidden");
