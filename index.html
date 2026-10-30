@@ -14,7 +14,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Playfair Display',serif}
 body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:#f5f7fb}
 .card{background:#fff;border-radius:22px;padding:40px;width:560px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12); transition: width 0.3s ease;}
-.card.landscape-mode {width: 1000px;} /* Membuat view lebar untuk tabel */
+.card.landscape-mode {width: 1250px;} /* Diperlebar agar tidak perlu scroll ke samping */
 h2{font-size:36px;color:#333;margin-bottom:8px}
 .subtitle{font-size:14px;color:#999;margin-bottom:28px}
 .main-option{padding:16px;margin:12px 0;border-radius:15px;background:#f2f5fb;color:#555;cursor:pointer;transition:.25s;border:1px solid #e8edf5}
@@ -59,26 +59,21 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .status-error{color:#d53d49!important}
 .back-button{margin-top:24px}
 
-/* FORM PASIEN SISIP STYLES */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-.landscape-mode .form-grid { grid-template-columns: repeat(3, 1fr); }
+/* FORM & TABLE PASIEN SISIP */
+.form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
 .form-grid input { margin: 0; }
 .form-grid label { font-size: 11px; color: #777; text-align: left; display: block; margin-bottom: 4px; font-weight: 600;}
 .input-group { text-align: left; }
-.table-container { overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #dfe5ef; background: #fff;}
-.pasien-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; white-space: nowrap; }
-.pasien-table th { background: #41b8bc; color: white; padding: 10px; border: 1px solid #dfe5ef; font-weight: 600;}
-.pasien-table td { padding: 8px 10px; border: 1px solid #dfe5ef; color: #555;}
+.table-container { margin-top: 20px; border-radius: 8px; border: 1px solid #dfe5ef; background: #fff;}
+.pasien-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; table-layout: fixed; }
+.pasien-table th, .pasien-table td { padding: 9px 6px; border: 1px solid #dfe5ef; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; }
+.pasien-table th { background: #41b8bc; color: white; font-weight: 600; }
+.pasien-table td { color: #555; }
 .btn-delete { background: #e5484d; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; width: auto; font-size: 10px; box-shadow: none; margin-top: 0;}
 
 @media(max-width:768px){
-    .landscape-mode .form-grid { grid-template-columns: 1fr 1fr; }
-}
-@media(max-width:480px){
-    .card{padding:26px 20px}
-    h2{font-size:30px}
-    .form-grid { grid-template-columns: 1fr; }
-    .landscape-mode .form-grid { grid-template-columns: 1fr; }
+    .card.landscape-mode { width: 100%; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -91,7 +86,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 <div id="menu">
     <div class="main-option" onclick="openAdmin()">PIPP Administration</div>
     <div class="main-option" onclick="openConverter()">Converter</div>
-    <div class="main-option" onclick="openPasienSisip()">Pasien Sisip PIPP</div>
+    <div class="main-option" onclick="openPasienSisipPrompt()">Pasien Sisip PIPP</div>
 </div>
 
 <div id="admin" class="hidden">
@@ -113,7 +108,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
     
     <div class="form-grid">
         <div class="input-group">
-            <label>Tanggal Penyampaian Keluhan</label>
+            <label>Tgl Penyampaian Keluhan</label>
             <input type="date" id="psTglKeluhan">
         </div>
         <div class="input-group">
@@ -122,19 +117,19 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         </div>
         <div class="input-group">
             <label>Nama Peserta</label>
-            <input type="text" id="psNama" placeholder="Contoh: Budi Santoso">
+            <input type="text" id="psNama" placeholder="Nama Peserta">
         </div>
         <div class="input-group">
-            <label>Sumber Konfirmasi / Konteks</label>
-            <input type="text" id="psSumber" placeholder="Contoh: IGD / Rawat Jalan">
+            <label>Sumber Konfirmasi</label>
+            <input type="text" id="psSumber" placeholder="IGD / Rawat Jalan">
         </div>
         <div class="input-group">
             <label>Nomor HP</label>
-            <input type="tel" id="psNoHp" placeholder="Contoh: 08123456789">
+            <input type="tel" id="psNoHp" placeholder="08123456789">
         </div>
-        <div class="input-group">
+        <div class="input-group" style="grid-column: span 2;">
             <label>ACC NS/ DOKTER + EXT</label>
-            <input type="text" id="psKeterangan" placeholder="Contoh: ACC dr. Andi, Sp.PD (Ext 123)">
+            <input type="text" id="psKeterangan" placeholder="ACC dr. Andi (Ext 123)">
         </div>
         <div class="input-group">
             <label>Jam Konfirmasi</label>
@@ -147,15 +142,15 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         <table class="pasien-table">
             <thead>
                 <tr>
-                    <th style="text-align: center;">No</th>
-                    <th>TANGGAL PENYAMPAIAN KELUHAN</th>
-                    <th>TANGGAL SISIP</th>
-                    <th>NAMA PESERTA</th>
-                    <th>SUMBER KONFIRMASI / KONTEKS</th>
-                    <th>NOMOR HP</th>
-                    <th>ACC NS/ DOKTER + EXT</th>
-                    <th>JAM KONFIRMASI</th>
-                    <th style="text-align: center;">Hapus</th>
+                    <th style="width: 5%; text-align: center;">No</th>
+                    <th style="width: 14%;">TGL KELUHAN</th>
+                    <th style="width: 13%;">TGL SISIP</th>
+                    <th style="width: 16%;">NAMA PESERTA</th>
+                    <th style="width: 14%;">SUMBER</th>
+                    <th style="width: 12%;">NO HP</th>
+                    <th style="width: 16%;">ACC NS/ DOKTER + EXT</th>
+                    <th style="width: 10%;">JAM</th>
+                    <th style="width: 5%; text-align: center;">X</th>
                 </tr>
             </thead>
             <tbody id="psTableBody">
@@ -250,8 +245,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 <script>
 /* PDF.JS CONFIGURATION */
 const PDFJS_VERSION = "3.11.174";
-const PDFJS_BASE =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
+const PDFJS_BASE = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_BASE + "pdf.worker.min.js";
 
@@ -265,6 +259,8 @@ const PDFJS_OPTIONS = {
 
 let modeValue = 90;
 let modeType = "days";
+let currentPasienPassword = localStorage.getItem("pipp_pasien_pwd") || "290898";
+let generatedOTP = "";
 
 const $ = id => document.getElementById(id);
 
@@ -360,8 +356,45 @@ function backMenu() {
     subtitle.textContent = "Automatic BPJS Date Calculator";
 }
 
-/* PASIEN SISIP PIPP LOGIC */
+/* AUTH & PASIEN SISIP PIPP LOGIC */
 let pasienData = [];
+
+function openPasienSisipPrompt() {
+    let action = prompt("Masukkan Password untuk akses Pasien Sisip:\n(Ketik 'GANTI' jika ingin mengganti password melalui email)");
+    
+    if (action === null) return;
+    
+    if (action.toUpperCase() === "GANTI") {
+        requestOTPFlow();
+        return;
+    }
+    
+    if (action === currentPasienPassword) {
+        openPasienSisip();
+    } else {
+        alert("Password salah!");
+    }
+}
+
+function requestOTPFlow() {
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    alert(`[Simulasi Sistem]\nKode OTP telah dikirim ke email: abbackup070809@gmail.com\n\n(Untuk simulasi, kode OTP Anda adalah: ${generatedOTP})`);
+    
+    let inputOtp = prompt("Masukkan 6 digit kode OTP yang dikirim ke email abbackup070809@gmail.com:");
+    if (inputOtp === generatedOTP) {
+        let newPwd = prompt("Verifikasi OTP Berhasil!\nMasukkan Password Baru Anda:");
+        if (newPwd && newPwd.trim().length > 0) {
+            currentPasienPassword = newPwd.trim();
+            localStorage.setItem("pipp_pasien_pwd", currentPasienPassword);
+            alert("Password berhasil diubah! Silakan masuk kembali.");
+            openPasienSisipPrompt();
+        } else {
+            alert("Password baru tidak boleh kosong.");
+        }
+    } else {
+        alert("Kode OTP salah atau dibatalkan.");
+    }
+}
 
 function openPasienSisip() {
     mainCard.classList.add("landscape-mode");
@@ -372,7 +405,6 @@ function openPasienSisip() {
     title.textContent = "Pasien Sisip";
     subtitle.textContent = "Rekap Pasien Sisip PIPP RS Awal Bros";
     
-    // Set default date to today
     const today = new Date().toISOString().split('T')[0];
     if(!$("psTglKeluhan").value) $("psTglKeluhan").value = today;
     if(!$("psTglSisip").value) $("psTglSisip").value = today;
@@ -399,7 +431,6 @@ function addPasienSisip() {
         jam: pJam
     });
 
-    // Reset fields except date
     $("psNama").value = "";
     $("psSumber").value = "";
     $("psNoHp").value = "";
@@ -449,10 +480,8 @@ function exportPasienCSV() {
     }
 
     let csvContent = "data:text/csv;charset=utf-8,";
-    // Header
     csvContent += "No,TANGGAL PENYAMPAIAN KELUHAN,TANGGAL SISIP,NAMA PESERTA,SUMBER KONFIRMASI / KONTEKS,NOMOR HP,ACC NS/ DOKTER + EXT,JAM KONFIRMASI\n";
 
-    // Data rows
     pasienData.forEach((p, i) => {
         const row = [
             i + 1,
@@ -1129,7 +1158,6 @@ async function convertPDFJPG() {
             const page = await pdf.getPage(n);
             const originalViewport = page.getViewport({ scale: 1 });
             
-            // Render dasar PDF sedikit lebih kecil untuk mempercepat kompresi awal
             const maxDimension = 3000;
             const scale = Math.min(
                 2,
@@ -1156,7 +1184,6 @@ async function convertPDFJPG() {
                 intent: "display"
             }).promise;
 
-            // Algoritma kompresi per halaman agar <= 100 KB
             let finalBlob = null;
             let targetW = canvas.width;
             let targetH = canvas.height;
@@ -1192,7 +1219,6 @@ async function convertPDFJPG() {
                 }
             }
 
-            // Jika gagal tembus 100KB, kompresi paksa
             if (!finalBlob) {
                 finalBlob = await canvasToBlob(tempCanvas, "image/jpeg", 0.1);
             }
@@ -1200,10 +1226,8 @@ async function convertPDFJPG() {
             const pageName = `${baseName}_page_${String(n).padStart(3, "0")}.jpg`;
             downloadBlob(finalBlob, pageName);
             
-            // Jeda singkat agar browser tidak ngehang
             await new Promise(resolve => setTimeout(resolve, 300));
 
-            // Bersihkan memori canvas
             canvas.width = 0;
             canvas.height = 0;
             tempCanvas.width = 0;
