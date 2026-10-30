@@ -13,7 +13,8 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Playfair Display',serif}
 body{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;background:#f5f7fb}
-.card{background:#fff;border-radius:22px;padding:40px;width:560px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12)}
+.card{background:#fff;border-radius:22px;padding:40px;width:560px;max-width:100%;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.12); transition: width 0.3s ease;}
+.card.landscape-mode {width: 1000px;} /* Membuat view lebar untuk tabel */
 h2{font-size:36px;color:#333;margin-bottom:8px}
 .subtitle{font-size:14px;color:#999;margin-bottom:28px}
 .main-option{padding:16px;margin:12px 0;border-radius:15px;background:#f2f5fb;color:#555;cursor:pointer;transition:.25s;border:1px solid #e8edf5}
@@ -60,6 +61,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 
 /* FORM PASIEN SISIP STYLES */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+.landscape-mode .form-grid { grid-template-columns: repeat(3, 1fr); }
 .form-grid input { margin: 0; }
 .form-grid label { font-size: 11px; color: #777; text-align: left; display: block; margin-bottom: 4px; font-weight: 600;}
 .input-group { text-align: left; }
@@ -69,16 +71,20 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 .pasien-table td { padding: 8px 10px; border: 1px solid #dfe5ef; color: #555;}
 .btn-delete { background: #e5484d; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; width: auto; font-size: 10px; box-shadow: none; margin-top: 0;}
 
+@media(max-width:768px){
+    .landscape-mode .form-grid { grid-template-columns: 1fr 1fr; }
+}
 @media(max-width:480px){
     .card{padding:26px 20px}
     h2{font-size:30px}
     .form-grid { grid-template-columns: 1fr; }
+    .landscape-mode .form-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="card" id="mainCard">
 <h2 id="title">PIPP-Calc</h2>
 <div class="subtitle" id="subtitle">Automatic BPJS Date Calculator</div>
 
@@ -114,7 +120,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
             <label>Tanggal Sisip</label>
             <input type="date" id="psTglSisip">
         </div>
-        <div class="input-group" style="grid-column: 1 / -1;">
+        <div class="input-group">
             <label>Nama Peserta</label>
             <input type="text" id="psNama" placeholder="Contoh: Budi Santoso">
         </div>
@@ -126,9 +132,13 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
             <label>Nomor HP</label>
             <input type="tel" id="psNoHp" placeholder="Contoh: 08123456789">
         </div>
-        <div class="input-group" style="grid-column: 1 / -1;">
-            <label>NS ACC / Dokter + Ext + Jam Konfirm</label>
-            <input type="text" id="psKeterangan" placeholder="Contoh: ACC dr. Andi, Sp.PD (14:30)">
+        <div class="input-group">
+            <label>ACC NS/ DOKTER + EXT</label>
+            <input type="text" id="psKeterangan" placeholder="Contoh: ACC dr. Andi, Sp.PD (Ext 123)">
+        </div>
+        <div class="input-group">
+            <label>Jam Konfirmasi</label>
+            <input type="time" id="psJam">
         </div>
     </div>
     <button onclick="addPasienSisip()">Tambah Data Rekap</button>
@@ -143,7 +153,8 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
                     <th>NAMA PESERTA</th>
                     <th>SUMBER KONFIRMASI / KONTEKS</th>
                     <th>NOMOR HP</th>
-                    <th>NS ACC / DOKTER + EXT + JAM KONFIRM</th>
+                    <th>ACC NS/ DOKTER + EXT</th>
+                    <th>JAM KONFIRMASI</th>
                     <th style="text-align: center;">Hapus</th>
                 </tr>
             </thead>
@@ -257,6 +268,7 @@ let modeType = "days";
 
 const $ = id => document.getElementById(id);
 
+const mainCard = $("mainCard");
 const menu = $("menu");
 const admin = $("admin");
 const converter = $("converter");
@@ -318,6 +330,7 @@ function downloadBlob(blob, filename) {
 }
 
 function openAdmin() {
+    mainCard.classList.remove("landscape-mode");
     menu.classList.add("hidden");
     converter.classList.add("hidden");
     pasienSisip.classList.add("hidden");
@@ -327,6 +340,7 @@ function openAdmin() {
 }
 
 function openConverter() {
+    mainCard.classList.remove("landscape-mode");
     menu.classList.add("hidden");
     admin.classList.add("hidden");
     pasienSisip.classList.add("hidden");
@@ -337,6 +351,7 @@ function openConverter() {
 }
 
 function backMenu() {
+    mainCard.classList.remove("landscape-mode");
     menu.classList.remove("hidden");
     admin.classList.add("hidden");
     converter.classList.add("hidden");
@@ -349,6 +364,7 @@ function backMenu() {
 let pasienData = [];
 
 function openPasienSisip() {
+    mainCard.classList.add("landscape-mode");
     menu.classList.add("hidden");
     admin.classList.add("hidden");
     converter.classList.add("hidden");
@@ -371,13 +387,16 @@ function addPasienSisip() {
         return;
     }
 
+    const pJam = $("psJam").value || "-";
+
     pasienData.push({
         tglKeluhan: $("psTglKeluhan").value,
         tglSisip: $("psTglSisip").value,
         nama: pNama,
         sumber: $("psSumber").value.trim(),
         nohp: $("psNoHp").value.trim(),
-        keterangan: $("psKeterangan").value.trim()
+        keterangan: $("psKeterangan").value.trim(),
+        jam: pJam
     });
 
     // Reset fields except date
@@ -385,6 +404,7 @@ function addPasienSisip() {
     $("psSumber").value = "";
     $("psNoHp").value = "";
     $("psKeterangan").value = "";
+    $("psJam").value = "";
 
     renderPasienTable();
 }
@@ -399,7 +419,7 @@ function renderPasienTable() {
     tbody.innerHTML = "";
     
     if (pasienData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:15px; color:#999;">Belum ada data rekapan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:15px; color:#999;">Belum ada data rekapan.</td></tr>`;
         return;
     }
 
@@ -413,6 +433,7 @@ function renderPasienTable() {
             <td>${p.sumber}</td>
             <td>${p.nohp}</td>
             <td>${p.keterangan}</td>
+            <td style="text-align: center; color: #41b8bc; font-weight: bold;">${p.jam}</td>
             <td style="text-align: center;">
                 <button class="btn-delete" onclick="removePasien(${i})">X</button>
             </td>
@@ -429,7 +450,7 @@ function exportPasienCSV() {
 
     let csvContent = "data:text/csv;charset=utf-8,";
     // Header
-    csvContent += "No,TANGGAL PENYAMPAIAN KELUHAN,TANGGAL SISIP,NAMA PESERTA,SUMBER KONFIRMASI / KONTEKS,NOMOR HP,NS ACC / DOKTER + EXT + JAM KONFIRM\n";
+    csvContent += "No,TANGGAL PENYAMPAIAN KELUHAN,TANGGAL SISIP,NAMA PESERTA,SUMBER KONFIRMASI / KONTEKS,NOMOR HP,ACC NS/ DOKTER + EXT,JAM KONFIRMASI\n";
 
     // Data rows
     pasienData.forEach((p, i) => {
@@ -440,7 +461,8 @@ function exportPasienCSV() {
             `"${p.nama}"`,
             `"${p.sumber}"`,
             `"${p.nohp}"`,
-            `"${p.keterangan}"`
+            `"${p.keterangan}"`,
+            `"${p.jam}"`
         ].join(",");
         csvContent += row + "\n";
     });
