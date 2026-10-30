@@ -104,7 +104,7 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
 
 <!-- PASIEN SISIP MENU -->
 <div id="pasienSisip" class="hidden">
-    <p class="desc">Isi form di bawah untuk merekap pasien sisip. Data tersimpan otomatis di browser hingga Anda hapus manual.</p>
+    <p class="desc">Isi form di bawah untuk merekap pasien sisip. Data tersimpan otomatis & bisa di-backup/upload ulang.</p>
     
     <div class="form-grid">
         <div class="input-group">
@@ -164,8 +164,12 @@ button:disabled{opacity:.55;cursor:wait;transform:none}
         </table>
     </div>
     
-    <div class="merge-actions" style="margin-top:10px;">
-        <button type="button" class="secondary-btn" onclick="exportPasienExcel()" style="background:#41b8bc; color:white;">Download Rekap (Excel)</button>
+    <div class="merge-actions" style="margin-top:10px; display:flex; gap:8px;">
+        <button type="button" class="secondary-btn" onclick="exportPasienExcel()" style="background:#41b8bc; color:white; flex:1;">Download Rekap (Excel)</button>
+        <label class="secondary-btn" style="background:#2498f5; color:white; flex:1; padding:12px; border-radius:13px; text-align:center; cursor:pointer; font-weight:600; font-size:14px; margin-top:8px;">
+            Upload / Import Excel
+            <input type="file" id="importExcelInput" accept=".xls,.xlsx,.csv" style="display:none;" onchange="importPasienExcel(event)">
+        </label>
     </div>
 
     <button class="secondary-btn back-button" onclick="backMenu()">Back to Main Menu</button>
@@ -360,7 +364,7 @@ function backMenu() {
     subtitle.textContent = "Automatic BPJS Date Calculator";
 }
 
-/* AUTH & PASIEN SISIP PIPP LOGIC (WITH LOCALSTORAGE) */
+/* AUTH & PASIEN SISIP PIPP LOGIC (WITH LOCALSTORAGE & IMPORT) */
 let pasienData = JSON.parse(localStorage.getItem("pipp_pasien_data")) || [];
 
 function openPasienSisipPrompt() {
@@ -520,6 +524,61 @@ function exportPasienExcel() {
 
     const blob = new Blob([htmlContent], { type: "application/vnd.ms-excel" });
     downloadBlob(blob, "Rekap_Pasien_Sisip_PIPP.xls");
+}
+
+function importPasienExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(e.target.result, "text/html");
+            const rows = doc.querySelectorAll("table tr");
+
+            if (rows.length <= 1) {
+                alert("Format file tidak valid atau data kosong.");
+                return;
+            }
+
+            let importedData = [];
+            // Mulai dari i = 1 untuk melewati baris header (th)
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i].querySelectorAll("td");
+                if (cols.length >= 9) {
+                    importedData.push({
+                        tglKeluhan: cols[1].textContent.trim(),
+                        tglSisip: cols[2].textContent.trim(),
+                        dokterTujuan: cols[3].textContent.trim(),
+                        nama: cols[4].textContent.trim(),
+                        sumber: cols[5].textContent.trim(),
+                        nohp: cols[6].textContent.trim(),
+                        keterangan: cols[7].textContent.trim(),
+                        jam: cols[8].textContent.trim()
+                    });
+                }
+            }
+
+            if (importedData.length > 0) {
+                if (confirm(`Berhasil membaca ${importedData.length} data pasien. Ingin menggabungkan dengan data yang sudah ada atau menimpanya? (OK = Timpa baru, Cancel = Batalkan)`)) {
+                    pasienData = importedData;
+                } else {
+                    pasienData = pasienData.concat(importedData);
+                }
+                localStorage.setItem("pipp_pasien_data", JSON.stringify(pasienData));
+                renderPasienTable();
+                alert("Data berhasil di-import!");
+            } else {
+                alert("Tidak ada baris data valid yang ditemukan dalam file.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Gagal membaca file Excel. Pastikan file sesuai format unduhan aplikasi ini.");
+        }
+        event.target.value = ""; // Reset input file
+    };
+    reader.readAsText(file);
 }
 
 /* CONVERTER MENU LOGIC */
